@@ -8,7 +8,7 @@ UNDERLINE = "-" * 214
 CELL_WIDTH = 6 + (len(SPACING) * 2) 
 
 
-def get_first_monday(in_date: datetime) -> datetime:
+def calc_first_monday(in_date: datetime) -> datetime:
     """
     Takes 'year' (int) and 'month' (int) as input and returns
     the first Monday of that month (datetime)
@@ -20,10 +20,10 @@ def get_first_monday(in_date: datetime) -> datetime:
     return d + timedelta(offset)
 
 
-def get_calendar_weeks(first_monday: datetime) -> dict:
+def calc_calendar_weeks(first_monday: datetime) -> dict:
     """
-    Takes the first day of a given month (datetime) as input and returns a dict of the first Monday
-    for each of the consecutive six week periods beginning with the first day of the month
+    Takes the first Monday day of a given month (datetime) as input and returns a dict of the first
+    Monday for each of the consecutive six week periods beginning with the first day of the month
     """
     week_start = {}
 
@@ -52,16 +52,30 @@ def draw_week(first_monday: datetime):
     print("\n" + UNDERLINE)
 
 
+def pull_holidays(file_location: str) -> dict:
+    """
+    Reads text data from 'file_location' and returns a dict with key (datetime) representing the
+    holiday date and value (str) representing the holiday description.
+    """
+    holiday_dict = {}
+    with open(file_location) as file:
+        for line in file.readlines():
+            line_part = line.split(",")
+            date_part = datetime.strptime(line_part[0], "%m/%d/%y")
+            desc_part = line_part[1].strip()
+            holiday_dict[date_part] = desc_part
+        return holiday_dict 
+
+
 def pull_todo_items(path):
-    # Import items from a text file and save to a list of dicts. Fields will include:
-    # Workday, Status, Owner, Process
+    # Import items from a text file and save to a list of TODO class objects. Class attributes
+    # include 'workday', 'status', 'owner', 'process', and a calculated attribute 'assigned_date'
     pass
 
 def assign_date(workday_num: int) -> datetime:
     # Will have as a dependency a table of holidays and the respective date. This will be a
     # separate function that will retrieve holidays from a text file and store as a dict for
     # reference. Holidays are ignored for purposes of calculating assigning work days to dates.
+    # However, holidays will be displayed in the weekly calendar view
     pass
-
-
 
