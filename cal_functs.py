@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from enum import Enum
 
 
 SPACING = " " * 17
@@ -6,6 +7,27 @@ UNDERLINE = "-" * 214
 
 # length of date + spacing on each end - indentation on each end
 CELL_WIDTH = 6 + (len(SPACING) * 2) 
+
+
+class Status(Enum):
+    OPEN = "open"
+    STARTED = "started"
+    COMPLETE = "complete"
+
+
+class TODO:
+    def __init__(self, work_day: int, status: Status, owner: str, task: str):
+        self.work_day = work_day
+        self.status = status
+        self.owner = owner
+        self.task = task
+        self.task_date: datetime | None = None
+
+    def __repr__(self) -> str:
+            return (
+                f"TODO(work_day={self.work_day}, status='{self.status.value}', "
+                f"owner='{self.owner}', task='{self.task}', task_date='{self.task_date}')"
+            )
 
 
 def calc_first_monday(in_date: datetime) -> datetime:
@@ -60,17 +82,38 @@ def pull_holidays(file_location: str) -> dict:
     holiday_dict = {}
     with open(file_location) as file:
         for line in file.readlines():
-            line_part = line.split(",")
-            date_part = datetime.strptime(line_part[0], "%m/%d/%y")
-            desc_part = line_part[1].strip()
+            parsed_line = line.split(",")
+            date_part = datetime.strptime(parsed_line[0], "%m/%d/%y")
+            desc_part = parsed_line[1].strip()
             holiday_dict[date_part] = desc_part
         return holiday_dict 
 
 
-def pull_todo_items(path):
-    # Import items from a text file and save to a list of TODO class objects. Class attributes
-    # include 'workday', 'status', 'owner', 'process', and a calculated attribute 'assigned_date'
-    pass
+def pull_todo_items(file_location: str) -> list:
+    """
+
+    -- Add documentation here --
+
+    """
+    todo_list = []
+
+    with open(file_location) as file:
+        for row, line in enumerate(file.readlines()):
+            if  row > 1 and line != "\n": # To ignore the header and the EOF character
+                stat_str = line[3:11].strip()
+                if stat_str == "open":
+                    stat = Status.OPEN
+                elif stat_str == "started":
+                    stat = Status.STARTED
+                elif stat_str == "complete":
+                    stat = Status.COMPLETE
+                else:
+                    stat = Status.OPEN
+
+                todo_list.append(TODO(int(line[0:2]), stat, line[12:20].strip(),
+                                      line[21:57].strip()))
+    return todo_list
+
 
 def assign_date(workday_num: int) -> datetime:
     # Will have as a dependency a table of holidays and the respective date. This will be a
@@ -79,3 +122,10 @@ def assign_date(workday_num: int) -> datetime:
     # However, holidays will be displayed in the weekly calendar view
     pass
 
+def update_todo_text_file(path):
+    # function to write modifications to fields in the text file when called
+    pass
+
+def display_weekly_calendar():
+    # Populate the weely calendar with todo items and holidays
+    pass

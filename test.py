@@ -57,3 +57,23 @@ def test_holiday_import():
             print(datetime.strftime(k, "%x"), hol[k])
     print("--- End test data ---\n")
 
+def test_class_structure():
+    todo_item = TODO(1, Status.OPEN, "Ethan", "ARO Accretion")
+    print(todo_item)
+    todo_item.task_date = datetime(2024, 7, 1)
+    print(todo_item)
+    todo_item.status = Status.STARTED
+    print(todo_item)
+
+def test_pull_todo_items():
+    path = "data/close.txt"
+    todo_list = pull_todo_items(path)
+    print(f"Wd Status   Owner   Task")
+    print("---------------------------------------------------------")
+    for item in todo_list:
+        if item.status == Status.STARTED: 
+            print(f"{item.work_day:>2}", end=" ")
+            print(f"{item.status.value:<8}", end=" ")
+            print(f"{item.owner:<7}", end=" ")
+            print(item.task)
+
