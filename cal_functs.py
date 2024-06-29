@@ -21,12 +21,12 @@ class TODO:
         self.status = status
         self.owner = owner
         self.task = task
-        self.task_date: datetime | None = None
+        self.date: datetime | None = None
 
     def __repr__(self) -> str:
             return (
                 f"TODO(work_day={self.work_day}, status='{self.status.value}', "
-                f"owner='{self.owner}', task='{self.task}', task_date='{self.task_date}')"
+                f"owner='{self.owner}', task='{self.task}', task_date='{self.date}')"
             )
 
 
@@ -91,9 +91,8 @@ def pull_holidays(file_location: str) -> dict:
 
 def pull_todo_items(file_location: str) -> list:
     """
-
-    -- Add documentation here --
-
+    Takes as input a file location (str) and imports data from the text file into a list of TODO
+    class objects, returning the list.
     """
     todo_list = []
 
@@ -115,12 +114,43 @@ def pull_todo_items(file_location: str) -> list:
     return todo_list
 
 
-def assign_date(workday_num: int) -> datetime:
-    # Will have as a dependency a table of holidays and the respective date. This will be a
-    # separate function that will retrieve holidays from a text file and store as a dict for
-    # reference. Holidays are ignored for purposes of calculating assigning work days to dates.
-    # However, holidays will be displayed in the weekly calendar view
-    pass
+def assign_date(todo_list: list, close_month: datetime) -> list:
+    # Iterate over each date in the month and assign working days to the respective date. Then
+    # populate todo list items with the date that corresponds to it's working day.
+    beg_date = close_month + timedelta(1)
+    end_date = datetime(beg_date.year, beg_date.month + 1, 1) - timedelta(1)
+    working_day_table = {}
+    # OPEN_ITEM: Consider making this a parameter if the holiday table will be used more than once
+    holiday_table = pull_holidays("data/holidays.txt")
+
+    # Populate the working_day_table with corresponding dates
+    current_working_day = 1
+    for d in range(beg_date.day, end_date.day + 1):
+        this_date = datetime(beg_date.year, beg_date.month, d)
+        if this_date in holiday_table:
+            continue
+        if this_date.weekday() > 4: 
+            continue
+        working_day_table[current_working_day] = this_date
+        current_working_day += 1
+
+    # Populate the todo list items with dates that correspond to the item's working day
+
+    # OPEN_ITEM: Need to make sure working day per the source text file constrained to only those
+    # within the working_day_table range. (e.g. a working day of 35 in the text file will throw a
+    # KeyError)
+
+    for todo in todo_list:
+        if todo.work_day in working_day_table:
+            todo.date = working_day_table[todo.work_day]
+        else:
+            # Need something more elegant. Consider whether we want to constrain the working days
+            # to only the subsequent month for the close period (and throw an exception here), or
+            # lengthen the close period - maybe 90 days? - and only throw an exception if outside
+            # of that range. But in either case, not a date of 01/01/01. 
+            todo.date = datetime(1,1,1) 
+    return todo_list
+
 
 def update_todo_text_file(path):
     # function to write modifications to fields in the text file when called

@@ -60,7 +60,7 @@ def test_holiday_import():
 def test_class_structure():
     todo_item = TODO(1, Status.OPEN, "Ethan", "ARO Accretion")
     print(todo_item)
-    todo_item.task_date = datetime(2024, 7, 1)
+    todo_item.date = datetime(2024, 7, 1)
     print(todo_item)
     todo_item.status = Status.STARTED
     print(todo_item)
@@ -77,3 +77,16 @@ def test_pull_todo_items():
             print(f"{item.owner:<7}", end=" ")
             print(item.task)
 
+def test_assign_date():
+    path = "data/close.txt"
+    todo_list = pull_todo_items(path)
+    close_month = datetime(2024, 6, 30)
+    todo_list = assign_date(todo_list, close_month)
+    print(f"Wd Date     Status   Owner   Task")
+    print("-----------------------------------------------------------------")
+    for todo in todo_list:
+        if todo.owner == "Ethan" and todo.status == Status.OPEN:
+            continue
+        print (f"{todo.work_day:>2} {datetime.strftime(todo.date, '%x')} "
+            f"{todo.status.value:<8} {todo.owner:<7} {todo.task}")
+    
