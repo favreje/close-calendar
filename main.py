@@ -1,21 +1,16 @@
-# import cal_functs
-# from datetime import datetime, timedelta
+from main_func import *
+from datetime import datetime, timedelta
 import test
 
 
 def main():
-    # test.test_full_year()
-    # test.test_calendar_weeks()
-    # test.test_weekly_display()
-    # test.test_holiday_import()
-    # test.test_class_structure()
-    # test.test_pull_todo_items()
-    test.test_assign_date()
-
+    accounting_period = datetime(2024, 12, 31)
+    todo_file_location = "data/close.txt"
+    todo_list = pull_todo_items(todo_file_location)
+    todo_list = assign_date(todo_list, accounting_period)
+    simple_report(todo_list, ["open", "started"])
 
 
 if __name__ == "__main__":
     main()
-
-
 
