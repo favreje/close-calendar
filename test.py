@@ -91,3 +91,6 @@ def test_assign_date():
         print (f"{todo.work_day:>2} {datetime.strftime(todo.date, '%x')} "
             f"{todo.status.value:<8} {todo.owner:<7} {todo.task}")
 
+
+def test_weekly_view(date):
+    print(date)

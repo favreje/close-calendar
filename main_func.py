@@ -105,7 +105,7 @@ def simple_report(todo_list: list, status:list):
     status_len = len(status)
 
     print(f"Wd Date     Day Status   Owner   Task")
-    print("-----------------------------------------------------------------")
+    print("---------------------------------------------------------------------")
     for i, owner in enumerate(owner_list):
         if i > 0:
             print()

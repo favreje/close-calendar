@@ -41,3 +41,33 @@ def pull_holidays(file_location: str) -> dict:
             desc_part = parsed_line[1].strip()
             holiday_dict[date_part] = desc_part
         return holiday_dict 
+
+
+def pivot_week_items(todo_list: list, first_monday: datetime) -> list:
+    day_dict = {}
+
+    # Initialize day_dict with empty lists
+    for i in range(5):
+        day_dict[first_monday + timedelta(i)] = []
+
+    # Create a dict to collect all elements for each 'row'
+    for k in day_dict.keys():
+        for item in todo_list:
+            if k == item.date:
+                day_dict[k].append(item)
+
+    # Determine the maximum number of entries for a any 'row'
+    max_len = max(len(values) for values in day_dict.values())
+
+    # Create and populate the matrix
+    matrix = []
+    for i in range(max_len):
+        row = []
+        for k in sorted(day_dict.keys()):
+            if i < len(day_dict[k]):
+                row.append(day_dict[k][i])
+            else:
+                row.append(None)
+        matrix.append(row)
+
+    return matrix
