@@ -44,6 +44,10 @@ def pull_holidays(file_location: str) -> dict:
 
 
 def pivot_week_items(todo_list: list, first_monday: datetime) -> list:
+    """
+    Takes a list of TODO objects and a particular week, represented by the first Monday of that
+    week and returns a [5 x n] matrix of TODO objects for each weekday in the given week. 
+    """
     day_dict = {}
 
     # Initialize day_dict with empty lists

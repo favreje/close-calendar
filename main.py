@@ -11,15 +11,26 @@ def main():
     # simple_report(todo_list, ["open", "started"])
 
     # Test for pivot_week_items function
-    test_week = util.pivot_week_items(todo_list, datetime(2024, 7, 29))
-    for row in test_week:
-        print()
+    test_week = datetime(2024, 7, 15)
+    SPACER = 19 * " "
+    print(f"{SPACER}Mon{(SPACER * 2)}  Tue{SPACER * 2}  Wed{SPACER * 2}  Thu{SPACER * 2}  Fri")
+    test_matrix = util.pivot_week_items(todo_list, test_week)
+    util.draw_week(test_week)
+    for i, row in enumerate(test_matrix):
+        if i != 0:
+            print()
         for i in row:
             if i is not None:
-                print(f"{i.task}{(40 - len(i.task)) * ' '}", end="")
+                if i.status == Status.OPEN:
+                    print(" [.] ", end="")
+                elif i.status == Status.STARTED:
+                    print(" [S] ", end="")
+                elif i.status == Status.COMPLETE:
+                    print(" [x] ", end="")
+                print(f"{i.task}{(38 - len(i.task)) * ' '}", end="")
             else:
-                print(f"None{36 * ' '}", end="")
-    print()
+                print(f"{43 * ' '}", end="")
+    print("\n")
 
 if __name__ == "__main__":
     main()

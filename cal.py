@@ -31,8 +31,3 @@ def calc_calendar_weeks(first_monday: datetime) -> dict:
     week_start["week6"] = week_start["week5"] + timedelta(7)
     return week_start
 
-
-
-
-
-

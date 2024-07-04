@@ -142,3 +142,4 @@ def simple_report(todo_list: list, status:list):
             else:
                 if todo.owner == owner:
                     print(report_str)
+
