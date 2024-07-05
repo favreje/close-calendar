@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from enum import Enum
-import util
+import util, cal
 
 
 class Status(Enum):
@@ -92,9 +92,40 @@ def update_todo_text_file(path):
     pass
 
 
-def display_weekly_calendar():
-    # Populate the weely calendar with todo items and holidays
-    pass
+def display_weekly_calendar(todo_list: list, accounting_period: datetime):
+    """
+    Prints a report in a weekly calendar view based on a given list of TODO objects, and an
+    accounting period date.
+    """
+
+    # Get a list of the start of each week in the given month
+    todo_month = datetime(accounting_period.year, accounting_period.month + 1, 1)
+    first_monday = cal.calc_first_monday(todo_month)
+    weeks = cal.calc_calendar_weeks(first_monday)
+
+    SPACER = 19 * " "
+    print(f"{SPACER}Mon{(SPACER * 2)}  Tue{SPACER * 2}  Wed{SPACER * 2}  Thu{SPACER * 2}  Fri")
+    
+    for week in weeks:
+
+        # Populate the weely calendar with todo items and holidays
+        test_matrix = util.pivot_week_items(todo_list, weeks[week])
+        util.draw_week(weeks[week])
+        for i, row in enumerate(test_matrix):
+            if i != 0:
+                print()
+            for i in row:
+                if i is not None:
+                    if i.status == Status.OPEN:
+                        print(" [.] ", end="")
+                    elif i.status == Status.STARTED:
+                        print(" [S] ", end="")
+                    elif i.status == Status.COMPLETE:
+                        print(" [x] ", end="")
+                    print(f"{i.task}{(38 - len(i.task)) * ' '}", end="")
+                else:
+                    print(f"{43 * ' '}", end="")
+        print("\n")
 
     
 def simple_report(todo_list: list, status:list):

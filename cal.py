@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 
 def calc_first_monday(in_date: datetime) -> datetime:
     """
-    Takes 'year' (int) and 'month' (int) as input and returns
-    the first Monday of that month (datetime)
+    Takes a date (datetime) as input and returns the first Monday of the month (datetime) included
+    in the datetime variable.
     """
     d = datetime(in_date.year, in_date.month, 1)
     if d.weekday() == 0:
