@@ -48,6 +48,59 @@ def pull_todo_items(file_location: str) -> list:
                                       line[21:57].strip()))
     return todo_list
 
+def write_data(todo_list: list, month_end:datetime):
+    file_location = "data/todo-data.txt"
+    with open(file_location, mode="w", encoding="utf-8") as file:
+        file.write(f"<eom>\n{month_end.strftime('%x')}\n</eom>\n")
+    with open(file_location, mode="a", encoding="utf-8") as file:
+        for item in todo_list:
+            file.write(f"<record>\n")
+            file.write(f"{item.work_day}\n")
+            file.write(f"{item.status}\n")
+            file.write(f"{item.owner}\n")
+            file.write(f"{item.task}\n")
+            file.write(f"{item.date.strftime('%x')}\n")
+            file.write(f"</record>\n")
+            
+def read_data(month_end):
+    file_location = "data/todo-data.txt"
+    with open(file_location, mode="r", encoding="utf-8") as file:
+        is_eom = False
+        is_record_part = False
+        this_record = []
+        todo_list = []
+        for line in file.readlines():
+            if line == "\n":
+                continue
+            if line == "<eom>\n":
+               is_eom = True
+               continue
+            if line == "<record>\n":
+                is_record_part = True
+                continue
+            if is_eom:
+                item_date = datetime.strptime(line.strip(), "%x")
+                if item_date != month_end:
+                    raise Exception(f"TODO data file is for Close: {item_date.strftime('%b %Y')}\n"
+                                   f"Current Close: {month_end.strftime('%b %Y')}"
+                                    )
+                else:
+                    is_eom = False
+            if is_record_part:
+                this_record.append(line)
+            if line == "</record>\n":
+                work_day = int(this_record[0].strip())
+                member_name = this_record[1].strip().split(".")[-1]
+                status = Status[member_name]
+                owner = this_record[2].strip()
+                task = this_record[3].strip()
+                this_todo = TODO( work_day, status, owner, task)
+                this_todo.date = datetime.strptime(this_record[4].strip(), "%x")
+                todo_list.append(this_todo)
+                this_record = []
+                is_record_part = False
+    return todo_list
+    
 
 def assign_date(todo_list: list, close_month: datetime) -> list:
     # Iterate over each date in the month and assign working days to the respective date. Then

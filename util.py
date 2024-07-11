@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-SPACING = " " * 17
+SPACING = " " * 15
 UNDERLINE = "-" * 214
 
 # length of date + spacing on each end - indentation on each end
@@ -23,7 +23,7 @@ def draw_week(first_monday: datetime):
     """
     print()
     for offset in range(5):
-        d = (first_monday + timedelta(offset)).strftime("%b-%d")
+        d = (first_monday + timedelta(offset)).strftime("%a %b-%d")
         print(f"[{SPACING}{d}{SPACING}]", end = " ")
     print("\n" + UNDERLINE)
 
