@@ -12,9 +12,14 @@ def main():
     # display_weekly_calendar(todo_list, accounting_period)
 
     # Test for read / write
-    write_data(todo_list, accounting_period)
-    new_list = read_data(accounting_period)
-    display_weekly_calendar(new_list, accounting_period)
+    # write_data(todo_list, accounting_period)
+    # new_list = read_data(accounting_period)
+    # simple_report(new_list, ["all"])
+    for todo in todo_list:
+        if todo.id == 38:
+            todo.status = Status.COMPLETE
+    for todo in todo_list:
+        print(f"{todo.id:>2} {todo.status.value} {(10 - len(todo.status.value)) * ' '}{todo.task}")
 
 if __name__ == "__main__":
     main()

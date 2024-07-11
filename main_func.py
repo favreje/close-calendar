@@ -16,11 +16,12 @@ class TODO:
         self.owner = owner
         self.task = task
         self.date: datetime | None = None
+        self.id: int | None = None
 
     def __repr__(self) -> str:
             return (
                 f"TODO(work_day={self.work_day}, status='{self.status.value}', "
-                f"owner='{self.owner}', task='{self.task}', task_date='{self.date}')"
+                f"owner='{self.owner}', task='{self.task}', task_date='{self.date}', id='{self.id}')"
             )
 
 
@@ -46,6 +47,9 @@ def pull_todo_items(file_location: str) -> list:
 
                 todo_list.append(TODO(int(line[0:2]), stat, line[12:20].strip(),
                                       line[21:57].strip()))
+    # Assign id
+    for i, todo in enumerate(todo_list):
+        todo.id = i + 1
     return todo_list
 
 def write_data(todo_list: list, month_end:datetime):
@@ -87,15 +91,15 @@ def read_data(month_end):
                 else:
                     is_eom = False
             if is_record_part:
-                this_record.append(line)
+                this_record.append(line.strip())
             if line == "</record>\n":
-                work_day = int(this_record[0].strip())
-                member_name = this_record[1].strip().split(".")[-1]
+                work_day = int(this_record[0])
+                member_name = this_record[1].split(".")[-1]
                 status = Status[member_name]
-                owner = this_record[2].strip()
-                task = this_record[3].strip()
+                owner = this_record[2]
+                task = this_record[3]
                 this_todo = TODO( work_day, status, owner, task)
-                this_todo.date = datetime.strptime(this_record[4].strip(), "%x")
+                this_todo.date = datetime.strptime(this_record[4], "%x")
                 todo_list.append(this_todo)
                 this_record = []
                 is_record_part = False

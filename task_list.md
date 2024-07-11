@@ -1,19 +1,15 @@
 # Open Items
 
 ## Immediate
-1. Refactor read_data() to pull the .strip() up to the build record code - and out of the parse
-record section.
-1. Refactor to add a record ID to TODO class.record
-    - From initial recurring file, set up id variables, starting with 1
-    - First record: id = 1 last record of initialization of recurring file is last sequential
-    number for the recurring file
-    - Create a function to determine next sequential number for added records
-        - increment the last id in the list: todo_list[-1].id + 1
+1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
     - The id will need to be incorporated into the read_data() and write_data() functions
+1. General refactoring to move util or cal functions out of the main_func.py module.
+    - Consider a separate module for report display
+    - Consider a separate module for basic terminal front-end
 
 ## Current Focus
-1. Build a simple terminal menu for working with and testing the modules (pretty front end comes
-   later)
+1. Build a simple terminal menu for working with and testing the modules (pretty web app front end
+   comes later)
 1. Build a graceful exit from wrong accounting month scenario
     - Make initial population from 'recurring items list' a once a month activity
     - After which, the default would be to load the working file at start up, unless the user asks
@@ -27,17 +23,15 @@ record section.
 1. Build out modules to interact with data
     - initialize a new accounting month - pull the recurring items into a new working month data
     file. Include appropriate warnings to user that they risk overwriting an existing file
-    - update status
-    - change owner
-    - change  working day
-    - modify task description
+    - Methods in the TODO class:
+        - update status
+        - change owner
+        - change  working day
+        - modify task description
     - add and delete todo items
         - add would include a date, but not a working day.
         - a function would be needed to determine the working day, raise exceptions for bad date
         formats, out of bound dates, weekends (push to previous Friday)
-1. Determine how to most efficiently interact with the todo list before building out the front end
-    - pass command line flags
-    - build a simple command line text menu
 1. Build a web app front end (keep it simple at first)
 
 
