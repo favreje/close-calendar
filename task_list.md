@@ -1,15 +1,13 @@
 # Open Items
 
 ## Immediate
-1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
-    - The id will need to be incorporated into the read_data() and write_data() functions
+1. Build a simple terminal menu for working with and testing the modules (pretty web app front end
+   comes later)
 1. General refactoring to move util or cal functions out of the main_func.py module.
     - Consider a separate module for report display
     - Consider a separate module for basic terminal front-end
 
 ## Current Focus
-1. Build a simple terminal menu for working with and testing the modules (pretty web app front end
-   comes later)
 1. Build a graceful exit from wrong accounting month scenario
     - Make initial population from 'recurring items list' a once a month activity
     - After which, the default would be to load the working file at start up, unless the user asks
@@ -18,6 +16,7 @@
     ```bash
     "A working file for 6/30/24 already exists. Are you sure you would like to overwrite it?"
     ```
+1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
 
 ## Main Concepts
 1. Build out modules to interact with data

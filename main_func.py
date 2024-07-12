@@ -25,7 +25,7 @@ class TODO:
             )
 
 
-def pull_todo_items(file_location: str) -> list:
+def pull_recurring_items(file_location: str) -> list:
     """
     Takes as input a file location (str) and imports data from the text file into a list of TODO
     class objects, returning the list.
@@ -64,6 +64,7 @@ def write_data(todo_list: list, month_end:datetime):
             file.write(f"{item.owner}\n")
             file.write(f"{item.task}\n")
             file.write(f"{item.date.strftime('%x')}\n")
+            file.write(f"{item.id}\n")
             file.write(f"</record>\n")
             
 def read_data(month_end):
@@ -100,6 +101,7 @@ def read_data(month_end):
                 task = this_record[3]
                 this_todo = TODO( work_day, status, owner, task)
                 this_todo.date = datetime.strptime(this_record[4], "%x")
+                this_todo.id = int(this_record[5])
                 todo_list.append(this_todo)
                 this_record = []
                 is_record_part = False
