@@ -1,4 +1,8 @@
 from datetime import datetime, timedelta
+from os import system
+
+
+clear_screen = lambda: system("clear")
 
 
 SPACING = " " * 15

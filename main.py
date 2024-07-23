@@ -10,16 +10,31 @@ def main():
     # todo_list = pull_recurring_items(todo_file_location) # refactor: change name to pull_recurring_items()
     # todo_list = assign_date(todo_list, accounting_period)
     # simple_report(todo_list, ["open", "started"])
-    # display_weekly_calendar(todo_list, accounting_period)
 
     # write_data(todo_list, accounting_period)
     working_list = read_data(accounting_period)
+    # display_weekly_calendar(working_list, accounting_period)
     # simple_report(working_list, ["all"])
 
+    # ----- Implementation of the Menu System -----
+    main_menu = fe.Menu("Main Menu")
+    report_menu = fe.Menu("Reports")
+    status_update_menu = fe.Menu("Change Task Status")
+    modify_task_menu = fe.Menu("Modify Tasks")
+
+    main_menu.add_item("Reports", submenu=report_menu)
+    main_menu.add_item("Change Task Status", submenu=status_update_menu)
+    main_menu.add_item("Modify Tasks", submenu=modify_task_menu)
+    report_menu.add_item("Weekly View", action=fe.Action(display_weekly_calendar,
+                            working_list, accounting_period))
+    report_menu.add_item("List View - Open and Started Items", action=fe.Action(simple_report,
+                            working_list, ["open", "started",]))
+    report_menu.add_item("List View - Completed Items", action=fe.Action(simple_report,
+                            working_list, ["complete",]))
+
+    main_menu.run()
 
 
-
-    fe.main()
 
 if __name__ == "__main__":
     main()

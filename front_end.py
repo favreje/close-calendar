@@ -1,8 +1,4 @@
-import os
-
-
-clear_screen = lambda: os.system("clear")
-
+import util
 
 
 class Action:
@@ -45,7 +41,7 @@ class Menu:
         char = "-"
         splash_display = f"\n ======= MONTHLY CLOSE CALENDAR ======== \n\n"
         title_display = self.centered_title(width, char)
-        clear_screen()
+        util.clear_screen()
         print(f"{splash_display}{title_display}")
         for i, item in enumerate(self.items, start=1):
             print(f"{i}. {item.name}")
@@ -75,30 +71,6 @@ class Menu:
                     selected_item.action.execute()
                 elif selected_item.submenu:
                     selected_item.submenu.run()
-
-# Sample actions for testing
-def sample_action(display_line):
-
-    clear_screen()
-    print(f"code: {display_line}\n")
-    input("...")
-
-
-
-# ----- Implementation of the Menu System -----
-def main():
-    main_menu = Menu("Main Menu")
-    report_menu = Menu("Reports")
-    status_update_menu = Menu("Change Task Status")
-    modify_task_menu = Menu("Modify Tasks")
-
-    main_menu.add_item("Reports", submenu=report_menu)
-    main_menu.add_item("Change Task Status", submenu=status_update_menu)
-    main_menu.add_item("Modify Tasks", submenu=modify_task_menu)
-    report_menu.add_item("Weekly View", action=Action(sample_action, "Weekly View Report is running..."))
-    report_menu.add_item("List View", action=Action(sample_action, "List View Report is running..."))
-
-    main_menu.run()
 
 
 

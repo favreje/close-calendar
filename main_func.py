@@ -171,9 +171,7 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
     first_monday = cal.calc_first_monday(todo_month)
     weeks = cal.calc_calendar_weeks(first_monday)
 
-    SPACER = 19 * " "
-    print(f"{SPACER}Mon{(SPACER * 2)}  Tue{SPACER * 2}  Wed{SPACER * 2}  Thu{SPACER * 2}  Fri")
-    
+    util.clear_screen() 
     for week in weeks:
 
         # Populate the weely calendar with todo items and holidays
@@ -194,6 +192,8 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
                 else:
                     print(f"{43 * ' '}", end="")
         print("\n")
+        
+    input("...")
 
     
 def simple_report(todo_list: list, status:list):
@@ -203,6 +203,7 @@ def simple_report(todo_list: list, status:list):
     owner_list = util.get_all_owners(todo_list)
     status_len = len(status)
 
+    util.clear_screen()
     print(f"Wd Date     Day Status   Owner   Task")
     print("---------------------------------------------------------------------")
     for i, owner in enumerate(owner_list):
@@ -241,4 +242,5 @@ def simple_report(todo_list: list, status:list):
             else:
                 if todo.owner == owner:
                     print(report_str)
+    input("...")
 
