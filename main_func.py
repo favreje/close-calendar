@@ -21,8 +21,18 @@ class TODO:
     def __repr__(self) -> str:
             return (
                 f"TODO(work_day={self.work_day}, status='{self.status.value}', "
-                f"owner='{self.owner}', task='{self.task}', task_date='{self.date}', id='{self.id}')"
+                f"owner='{self.owner}', task='{self.task}', task_date='{self.date}', id={self.id})"
             )
+    
+    def update_status(self, new_status):
+        if new_status == 'c':
+            self.status = Status.COMPLETE
+        elif new_status == 's':
+            self.status = Status.STARTED
+        elif new_status == 'o':
+            self.status = Status.OPEN
+        else:
+            raise ValueError("Parameter does not represent a class Status object")
 
 
 def pull_recurring_items(file_location: str) -> list:
@@ -109,8 +119,7 @@ def read_data(month_end):
     
 
 def assign_date(todo_list: list, close_month: datetime) -> list:
-    # Iterate over each date in the month and assign working days to the respective date. Then
-    # populate todo list items with the date that corresponds to it's working day.
+    # Iterate over each date in the month and assign dates based on working days.
     beg_date = close_month + timedelta(1)
     end_date = datetime(beg_date.year, beg_date.month + 1, 1) - timedelta(1)
     working_day_table = {}

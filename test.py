@@ -68,7 +68,7 @@ def test_class_structure():
 
 def test_pull_todo_items():
     path = "data/close.txt"
-    todo_list = pull_todo_items(path)
+    todo_list = pull_recurring_items(path)
     print(f"Wd Status   Owner   Task")
     print("---------------------------------------------------------")
     for item in todo_list:
@@ -80,7 +80,7 @@ def test_pull_todo_items():
 
 def test_assign_date():
     path = "data/close.txt"
-    todo_list = pull_todo_items(path)
+    todo_list = pull_recurring_items(path)
     close_month = datetime(2024, 6, 30)
     todo_list = assign_date(todo_list, close_month)
     print(f"Wd Date     Status   Owner   Task")
@@ -94,3 +94,24 @@ def test_assign_date():
 
 def test_weekly_view(date):
     print(date)
+
+
+def test_read_write_funcs(working_list, accounting_period):
+        # --- Testing updated read_data() and write_data() to incorporate self.id class attribute
+    for todo in working_list:
+        if todo.id == 38:
+            todo.update_status('s')
+        if todo.id == 60:
+            todo.owner = "Jeff"
+        #     todo.task = "Arm wrestle Hercules"
+        #     todo.update_status('c')
+        # if todo.id == 59:
+        #     todo.update_status('c')
+        #     todo.owner = "Sisyphus"
+        #     todo.task = "Roll the bolder back up the hill (again)"
+
+        for todo in working_list:
+            print(f"{todo.id:>2} {todo.status.value:<10} {todo.owner:<8} {todo.task}")
+
+        write_data(working_list, accounting_period)
+
