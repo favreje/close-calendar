@@ -80,12 +80,12 @@ def main():
                                     f"{datetime.strftime(todo.date, '%m/%d/%y %a')}"
                                     f"  {todo.status.value:<8} {todo.owner:<7} {todo.task}")
                             confirm = input("\nUpdate this item? (Y/n) ").lower() or 'y'
-                            if confirm == 'y':
+                            if confirm == 'y' or confirm == "yes":
                                 working_list[i].update_status('c')
                                 display_list = get_selected_item(working_list, Status.OPEN)
                             break
                 else:
-                    input(f"\nSelection is out of range. Please select again...\n")
+                    input(f"\nSelection is out of range. Please select again... ")
 
 
 

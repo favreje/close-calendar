@@ -1,13 +1,26 @@
 # Open Items
 
 ## Immediate
-1. Build a simple terminal menu for working with and testing the modules (pretty web app front end
-   comes later)
-1. General refactoring to move util or cal functions out of the main_func.py module.
-    - Consider a separate module for report display
-    - Consider a separate module for basic terminal front-end
 
 ## Current Focus
+### Update Status Function
+1. Move block of code for 'Update Status' to a function in main_func.py 
+1. Change parameter for the status to a list in order to include more than one (like the code for
+   'simple_report')
+1. Complete the module to include a final hook that writes to disk after status updates are
+   completed.
+1. Add the module to the front-end menu system
+1. More robust error handling of user input (Don't go crazy - we ultimately want a web-based front
+   end)
+
+### General
+1. Rethink accounting month check. When we have a working file, no need to continue to check for
+accounting month. The user can select to initiate a new accounting month from the menu.
+    - When initiating a new month, include warnings about "will overwrite existing date; cannot be
+    undone, etc."
+    - or better: create a backup before initiating a new month, in case user wants to revert
+
+## Main Concepts
 1. Build a graceful exit from wrong accounting month scenario
     - Make initial population from 'recurring items list' a once a month activity
     - After which, the default would be to load the working file at start up, unless the user asks
@@ -17,8 +30,6 @@
     "A working file for 6/30/24 already exists. Are you sure you would like to overwrite it?"
     ```
 1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
-
-## Main Concepts
 1. Build out modules to interact with data
     - initialize a new accounting month - pull the recurring items into a new working month data
     file. Include appropriate warnings to user that they risk overwriting an existing file
@@ -35,6 +46,8 @@
 
 
 ## Bugs and  Refactoring
+1. General refactoring to move util or cal functions out of the main_func.py module.
+    - Consider a separate module for report display
 1. assign_date func - Consider making the holiday_table a parameter to the function instead of a
 call from within the function *if* the table will be used more than once
 1. Make sure working days per the source text file are constrained to those
