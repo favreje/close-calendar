@@ -155,6 +155,26 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
     return todo_list
 
 
+def get_selected_item(todo_list, criteria):
+    items_per_page = 15
+    chunks = []
+    sub_list = []
+    short_list = list(filter(lambda x: x.status == criteria, todo_list))
+    length = len(short_list)
+    if length <= items_per_page:
+        return chunks.append(short_list)
+    for i, item in enumerate(short_list):
+        if i != 0 and i % (items_per_page) == 0:
+            chunks.append(sub_list)
+            sub_list = []
+            sub_list.append(item)
+        else:
+            sub_list.append(item)
+    if sub_list:
+        chunks.append(sub_list)
+    return chunks
+
+
 def update_todo_text_file(path):
     # function to write modifications to fields in the text file when called
     pass
