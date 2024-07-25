@@ -1,33 +1,50 @@
-# Open Items
+# TO-DO List
 
 ## Immediate
+1. Change parameter for the status to a list in order to include more than one (like the code for
+   'simple_report')
+1. update_status() - add a third parameter
+   - Parameters: (todo_list: list, current_status: list,new_status: TODO)
+   - Broadens the functionality to accept any combination of Status objects and modify to any type
 
 ## Current Focus
 ### Update Status Function
-1. Move block of code for 'Update Status' to a function in main_func.py 
-1. Change parameter for the status to a list in order to include more than one (like the code for
-   'simple_report')
 1. Complete the module to include a final hook that writes to disk after status updates are
    completed.
+    - I think reasonable to do this when user enters 'Done' for a batch of updates
+    - As opposed to after every TODO object update
 1. Add the module to the front-end menu system
 1. More robust error handling of user input (Don't go crazy - we ultimately want a web-based front
    end)
 
 ### General
 1. Rethink accounting month check. When we have a working file, no need to continue to check for
-accounting month. The user can select to initiate a new accounting month from the menu.
+   accounting month. The user can select to initiate a new accounting month from the menu.
     - When initiating a new month, include warnings about "will overwrite existing date; cannot be
     undone, etc."
     - or better: create a backup before initiating a new month, in case user wants to revert
 
 ## Main Concepts
+1. Web-based front-end would include a check-box type object, except with three states:
+   - A circle type bullet object
+   - Bullet object would toggle between
+        - red=open
+        - yellow=started
+        - green=complete
+   - Save this state to the server
+1. Eventually I'd like to add a separate module for general 'todo' items that are separate from the
+   monthly recurring task list.
+   - Think about what fields get inherited from TODO class, and what fields are unique to this new
+     class (e.g. 'tags' for item categories may be useful in a general 'todo' list, whereas
+   'working day' would not be)
+   - probably want to write this to disk in a separate file
 1. Build a graceful exit from wrong accounting month scenario
     - Make initial population from 'recurring items list' a once a month activity
     - After which, the default would be to load the working file at start up, unless the user asks
     to initialize a new working file.
     - Warn user if the accounting month in the saved file differs from the working accounting month:
     ```bash
-    "A working file for 6/30/24 already exists. Are you sure you would like to overwrite it?"
+    "A working file for 6/30/24 already exists. Are you sure you want to overwrite it?"
     ```
 1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
 1. Build out modules to interact with data
@@ -49,7 +66,7 @@ accounting month. The user can select to initiate a new accounting month from th
 1. General refactoring to move util or cal functions out of the main_func.py module.
     - Consider a separate module for report display
 1. assign_date func - Consider making the holiday_table a parameter to the function instead of a
-call from within the function *if* the table will be used more than once
+   call from within the function *if* the table will be used more than once
 1. Make sure working days per the source text file are constrained to those
    within the working_day_table range.
     - a working day of 35 in the text file throws a KeyError

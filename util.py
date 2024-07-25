@@ -79,3 +79,37 @@ def pivot_week_items(todo_list: list, first_monday: datetime) -> list:
         matrix.append(row)
 
     return matrix
+
+
+def print_display_list(sub_list):
+    page_width = 78
+    clear_screen()
+    splash = f"\n{' ' * 12}=============== UPDATE COMPLETION STATUS =============== \n\n"
+    header = f"  ID  WD  Date     Day  Status   Owner   Task\n {'-' * page_width}"
+    print(splash)
+    print(header)
+    for i in sub_list:
+        print(f"{i.id:>4}{i.work_day:>4}  {datetime.strftime(i.date, '%m/%d/%y %a')}"
+            f"  {i.status.value:<8} {i.owner:<7} {i.task}")
+
+
+def get_list_segments(todo_list, criteria):
+    items_per_page = 15
+    chunks = []
+    sub_list = []
+    short_list = list(filter(lambda x: x.status == criteria, todo_list))
+    length = len(short_list)
+    if length <= items_per_page:
+        return chunks.append(short_list)
+    for i, item in enumerate(short_list):
+        if i != 0 and i % (items_per_page) == 0:
+            chunks.append(sub_list)
+            sub_list = []
+            sub_list.append(item)
+        else:
+            sub_list.append(item)
+    if sub_list:
+        chunks.append(sub_list)
+    return chunks
+
+

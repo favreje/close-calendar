@@ -155,29 +155,43 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
     return todo_list
 
 
-def get_selected_item(todo_list, criteria):
-    items_per_page = 15
-    chunks = []
-    sub_list = []
-    short_list = list(filter(lambda x: x.status == criteria, todo_list))
-    length = len(short_list)
-    if length <= items_per_page:
-        return chunks.append(short_list)
-    for i, item in enumerate(short_list):
-        if i != 0 and i % (items_per_page) == 0:
-            chunks.append(sub_list)
-            sub_list = []
-            sub_list.append(item)
-        else:
-            sub_list.append(item)
-    if sub_list:
-        chunks.append(sub_list)
-    return chunks
-
-
-def update_todo_text_file(path):
-    # function to write modifications to fields in the text file when called
-    pass
+def update_status(todo_list:list, status):
+    display_list = util.get_list_segments(todo_list, status)
+    if display_list:
+        display_list_len = len(display_list)
+        sub_list_num = 0
+        while True:
+            util.clear_screen()
+            util.print_display_list(display_list[sub_list_num])
+            choice = input("\n (P)revious, (N)ext, (D)one, or Select Item: ").lower()
+            if choice == "d":
+                break
+            elif choice == "p":
+                if sub_list_num > 0:
+                    sub_list_num -= 1
+                util.clear_screen()
+            elif choice == "n":
+                if sub_list_num < display_list_len - 1:
+                    sub_list_num += 1
+                util.clear_screen()
+            elif choice.isnumeric():
+                available_to_select = [i.id for i in display_list[sub_list_num]]
+                sel_num = int(choice)
+                if sel_num in available_to_select:
+                    # Get and confirm choice before updating
+                    for i, todo in enumerate(todo_list):
+                        if todo.id == sel_num:
+                            print(f"  ID  WD  Date     Day  Status   Owner   Task\n {'-' * 78}\n"
+                                    f"{todo.id:>4}{todo.work_day:>4}  "
+                                    f"{datetime.strftime(todo.date, '%m/%d/%y %a')}"
+                                    f"  {todo.status.value:<8} {todo.owner:<7} {todo.task}")
+                            confirm = input("\nUpdate this item? (Y/n) ").lower() or 'y'
+                            if confirm == 'y' or confirm == "yes":
+                                todo_list[i].update_status('c')
+                                display_list = util.get_list_segments(todo_list, status)
+                            break
+                else:
+                    input(f"\nSelection is out of range. Please select again... ")
 
 
 def display_weekly_calendar(todo_list: list, accounting_period: datetime):
