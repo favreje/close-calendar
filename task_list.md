@@ -4,7 +4,7 @@
 1. Change parameter for the status to a list in order to include more than one (like the code for
    'simple_report')
 1. update_status() - add a third parameter
-   - Parameters: (todo_list: list, current_status: list,new_status: TODO)
+   - Parameters: (todo_list: list, current_status: list,new_status: Status)
    - Broadens the functionality to accept any combination of Status objects and modify to any type
 
 ## Current Focus
@@ -14,12 +14,21 @@
     - I think reasonable to do this when user enters 'Done' for a batch of updates
     - As opposed to after every TODO object update
 1. Add the module to the front-end menu system
+1. Add variations of this to the menu system
+    1. To change from 'open' / 'started' to 'complete' (modify the existing one to include 'started')
+    1. To change from 'open' to 'started'
+    1. To revert a 'complete' item to 'open' 
+    1. Consider a user-defined status update
+        - Accept user input for the desired current status(es) and the new status to operate upon,
+          and then run the module
 1. More robust error handling of user input (Don't go crazy - we ultimately want a web-based front
    end)
 
 ### General
+1. Menu should display the current 'Accounting Period' in the splash header
+1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 1. Rethink accounting month check. When we have a working file, no need to continue to check for
-   accounting month. The user can select to initiate a new accounting month from the menu.
+   accounting month. The user can select 'initiate a new accounting month' from the menu.
     - When initiating a new month, include warnings about "will overwrite existing date; cannot be
     undone, etc."
     - or better: create a backup before initiating a new month, in case user wants to revert
