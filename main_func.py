@@ -24,16 +24,6 @@ class TODO:
                 f"owner='{self.owner}', task='{self.task}', task_date='{self.date}', id={self.id})"
             )
     
-    def update_status(self, new_status):
-        if new_status == 'c':
-            self.status = Status.COMPLETE
-        elif new_status == 's':
-            self.status = Status.STARTED
-        elif new_status == 'o':
-            self.status = Status.OPEN
-        else:
-            raise ValueError("Parameter does not represent a class Status object")
-
 
 def pull_recurring_items(file_location: str) -> list:
     """
@@ -155,8 +145,11 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
     return todo_list
 
 
-def update_status(todo_list:list, status):
-    display_list = util.get_list_segments(todo_list, status)
+def update_status(todo_list: list, current_status: list, new_status: Status):
+    print(todo_list)
+    print(current_status)
+    print(new_status)
+    display_list = util.get_list_segments(todo_list, current_status)
     if display_list:
         display_list_len = len(display_list)
         sub_list_num = 0
@@ -187,8 +180,8 @@ def update_status(todo_list:list, status):
                                     f"  {todo.status.value:<8} {todo.owner:<7} {todo.task}")
                             confirm = input("\nUpdate this item? (Y/n) ").lower() or 'y'
                             if confirm == 'y' or confirm == "yes":
-                                todo_list[i].update_status('c')
-                                display_list = util.get_list_segments(todo_list, status)
+                                todo_list[i].status = new_status
+                                display_list = util.get_list_segments(todo_list, current_status)
                             break
                 else:
                     input(f"\nSelection is out of range. Please select again... ")

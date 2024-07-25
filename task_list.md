@@ -1,19 +1,18 @@
 # TO-DO List
 
 ## Immediate
-1. Change parameter for the status to a list in order to include more than one (like the code for
-   'simple_report')
-1. update_status() - add a third parameter
-   - Parameters: (todo_list: list, current_status: list,new_status: Status)
-   - Broadens the functionality to accept any combination of Status objects and modify to any type
 
 ## Current Focus
+
+### Menu
+1. Figure out how to add a confirmation to exiting from the main menu
+1. Add a shortcut to go from nested menus directly back to main menu (maybe 99?)
+
 ### Update Status Function
 1. Complete the module to include a final hook that writes to disk after status updates are
    completed.
-    - I think reasonable to do this when user enters 'Done' for a batch of updates
-    - As opposed to after every TODO object update
-1. Add the module to the front-end menu system
+    - I think it is reasonable to do this when user enters 'Done' for a batch of updates, as
+      opposed to after every TODO object update
 1. Add variations of this to the menu system
     1. To change from 'open' / 'started' to 'complete' (modify the existing one to include 'started')
     1. To change from 'open' to 'started'
@@ -27,6 +26,9 @@
 ### General
 1. Menu should display the current 'Accounting Period' in the splash header
 1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
+1. 'simple list' report - need to remove the additional lines if an owner is not present
+    - code currently does not check, and puts a line between users, even if the user is not present
+      in the report.
 1. Rethink accounting month check. When we have a working file, no need to continue to check for
    accounting month. The user can select 'initiate a new accounting month' from the menu.
     - When initiating a new month, include warnings about "will overwrite existing date; cannot be
@@ -47,8 +49,7 @@
      class (e.g. 'tags' for item categories may be useful in a general 'todo' list, whereas
    'working day' would not be)
    - probably want to write this to disk in a separate file
-1. Build a graceful exit from wrong accounting month scenario
-    - Make initial population from 'recurring items list' a once a month activity
+1. Make initial population from 'recurring items list' a once a month activity (add to menu)
     - After which, the default would be to load the working file at start up, unless the user asks
     to initialize a new working file.
     - Warn user if the accounting month in the saved file differs from the working accounting month:

@@ -93,11 +93,11 @@ def print_display_list(sub_list):
             f"  {i.status.value:<8} {i.owner:<7} {i.task}")
 
 
-def get_list_segments(todo_list, criteria):
+def get_list_segments(todo_list: list, criteria: list):
     items_per_page = 15
     chunks = []
     sub_list = []
-    short_list = list(filter(lambda x: x.status == criteria, todo_list))
+    short_list = list(filter(lambda x: x.status in criteria, todo_list))
     length = len(short_list)
     if length <= items_per_page:
         return chunks.append(short_list)
