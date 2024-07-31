@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+import sys
+from datetime import datetime as dt, timedelta
 from main_func import *
 import cal
 
-test_date = datetime(2024, 6, 30)
+test_date = dt(2024, 6, 30)
 test_date = test_date + timedelta(1)
 test_result = cal.calc_first_monday(test_date)
 test_result_string = test_result.strftime("%a %m/%d/%Y")
@@ -117,13 +118,11 @@ def test_read_write_funcs(working_list):
 
 
 def test_get_date():
-# ----- test get_date function -----
     test_date = util.get_accounting_period()
     print(f"\ntest_date= {test_date.strftime('%x')}")
 
 
 def test_init_month_end():
-# ----- test init_month_end func -----
     todo_list, test_date = init_month_end()
     if test_date and todo_list:
         display_weekly_calendar(todo_list, test_date)
@@ -131,28 +130,37 @@ def test_init_month_end():
 
 def test_data_persist_write_status_update():
 # ----- test that data persists after change in status -----
-    accounting_period = util.get_accounting_period()
+    accounting_period = read_accounting_period()
     working_list = read_data()
     update_status(working_list, [Status.OPEN, Status.STARTED], Status.COMPLETE)
     write_data(working_list)
     display_weekly_calendar(working_list, accounting_period)
 
-def test_data_persist_after_write():
-    accounting_period = datetime(2024, 7, 31)
-    working_list = read_data()
-    display_weekly_calendar(working_list, accounting_period)
 
+def test_data_persist_after_write():
+    # ----- Testing Complete -----
+    accounting_period = read_accounting_period()
+    working_list = read_data()
+    simple_report(working_list, ["complete",])
+    display_weekly_calendar(working_list, accounting_period)
+    
 
 def test_read_write_accounting_period():
+    # ----- Testing Complete -----
     input_accounting_period = util.get_accounting_period()
     write_accounting_period(input_accounting_period)
     output_accounting_period = read_accounting_period()
     print(f"Input Date: {input_accounting_period.strftime('%x')}")
     print(f"Output Date: {output_accounting_period.strftime('%x')}")
 
+
 def main():
-    # test_init_month_end()
-    test_read_write_accounting_period()
+    accounting_period = dt(2024, 7, 31)
+    print(f"\n\nA new Close Calendar for {accounting_period.strftime('%B %Y')} was successfully created.")
+    print(f"Please restart the application for the change to take effect.\n")
+    input("Press 'Enter' to continue...")
+    sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

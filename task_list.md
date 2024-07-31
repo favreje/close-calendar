@@ -1,13 +1,7 @@
 # TO-DO List
 
 ## Immediate
-1. Refactor read_data() and write_data() to be independent of accounting_period
-    - done, but need to test it
-1. Finish up init_month_end() by adding the write() function
-    - done, but need to test it
-1. Finish up update_status() by adding the write() function
-    - done, but need to test it
-1. Add initiate_month_end_menu to menu system, and add the init_month_end func as an executable
+- init_month_end(): remove return values, and require a restart after initiating a new month end. 
 
 ## Current Focus
 1. Add a cal func that takes a date as input and returns the corresponding working_day
@@ -29,20 +23,32 @@
         - Not exactly sure how to do this; maybe just a try / except block that will point the user
           to initiate a new month or recover from backup if there is bad data?
 
+## Issues
+1. Add initiate_month_end_menu to menu system, and add the init_month_end func as an executable
+    - For now, I'm going to remove return values, and require a restart after initiating a new
+    month end. This will pull the working_list and accounting_period objects from data files.
+    - Seems overly complex to get the menu logic to return values to main(), allowing for
+    continuation of the application after initiating a new accounting period, and I don't want to
+    make working_list and accounting_period global vars
+
 ## Main Concepts
 1. Web-based front-end would include a check-box type object, except with three states:
-   - A circle type bullet object
-   - Bullet object would toggle between
+    - A circle type bullet object
+    - Bullet object would toggle between
         - red=open
         - yellow=started
         - green=complete
-   - Save this state to the server
+    - Save this state to the server
 1. Feature: I'd like to add a separate module for general 'todo' items that are separate from the
    monthly recurring task list.
-   - Think about what fields get inherited from TODO class, and what fields are unique to this new
+    - Think about what fields get inherited from TODO class, and what fields are unique to this new
      class (e.g. 'tags' for item categories may be useful in a general 'todo' list, whereas
    'working day' would not be)
-   - probably want to write this to disk in a separate file
+    - probably want to write this to disk in a separate file
+1. Feature: Write a stylized list report to Excel. Various options to include:
+    - all info sorted by working date for initial file for the full team
+    - filter by Owner, sorted by working date for individual members
+    - filter by Owner, with 'open' items only for individual team member updates
 
 1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
 1. Feature: When initiating a new accounting month, ask user if they would like to use the existing

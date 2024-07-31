@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from enum import Enum
 import util, cal
+import sys
 
 
 class Status(Enum):
@@ -74,7 +75,7 @@ def read_accounting_period() -> datetime:
 
 def write_data(todo_list: list):
     file_location = "data/working-list.dat"
-    with open(file_location, mode="a", encoding="utf-8") as file:
+    with open(file_location, mode="w", encoding="utf-8") as file:
         for item in todo_list:
             file.write(f"<record>\n")
             file.write(f"{item.work_day}\n")
@@ -299,7 +300,7 @@ def init_month_end():
     todo_list = assign_date(todo_list, accounting_period)
     write_data(todo_list)
     write_accounting_period(accounting_period)
-    print(f"\n\nA new Close Calendar for {accounting_period.strftime('%b-%y')} was successfully created.")
+    print(f"\n\nA new Close Calendar for {accounting_period.strftime('%B %Y')} was successfully created.")
+    print(f"Please restart the application for the change to take effect.\n")
     input("Press 'Enter' to continue...")
-
-    return todo_list, accounting_period
+    sys.exit(0)

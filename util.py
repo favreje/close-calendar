@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from os import system
+import sys
 import cal
 
 
@@ -11,6 +12,10 @@ UNDERLINE = "-" * 214
 
 # length of date + spacing on each end - indentation on each end
 CELL_WIDTH = 6 + (len(SPACING) * 2) 
+
+
+def exit_app():
+    sys.exit(0)
 
 
 def get_all_owners(todo_list):
