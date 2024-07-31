@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from os import system
+import cal
 
 
 clear_screen = lambda: system("clear")
@@ -111,5 +112,31 @@ def get_list_segments(todo_list: list, criteria: list):
     if sub_list:
         chunks.append(sub_list)
     return chunks
+
+def get_accounting_period() -> datetime:
+    while True:
+        try:
+            user_entry = input("Enter New Accounting Period (mm/yy): ").lower()
+            date_parts = user_entry.split("/")
+            if len(date_parts[-1]) == 4:
+                date_parts[-1] = date_parts[-1][2:]
+            if len(date_parts) == 3:
+                # see if the "day" entered is valid
+                _ = datetime.strptime(
+                    date_parts[0] + "/" + date_parts[1] + "/" + date_parts[2][-2:], "%m/%d/%y"
+                ) 
+            user_date_str = date_parts[0] + "/01/" + date_parts[-1] 
+            input_date = datetime.strptime(user_date_str, "%m/%d/%y")
+            acct_period = cal.eom(input_date)
+            user_confirm = input(
+                f"\nNew accounting period is {acct_period.strftime('%x')}\n"
+                f"Is this correct? (y/n): "
+            ).lower()
+            if user_confirm in ("y", "yes"):
+                return acct_period
+
+        except ValueError:
+            print("Invalid entry. Please try again")
+
 
 

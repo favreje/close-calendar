@@ -1,39 +1,33 @@
 # TO-DO List
 
 ## Immediate
+1. Refactor read_data() and write_data() to be independent of accounting_period
+    - done, but need to test it
+1. Finish up init_month_end() by adding the write() function
+    - done, but need to test it
+1. Finish up update_status() by adding the write() function
+    - done, but need to test it
+1. Add initiate_month_end_menu to menu system, and add the init_month_end func as an executable
 
 ## Current Focus
-
-### Menu
-1. Figure out how to add a confirmation to exiting from the main menu
+1. Add a cal func that takes a date as input and returns the corresponding working_day
+    - with an exception if the date falls on a weekend or holiday
+    - to be used in a routine that would suggest the nearest working_day if weekend or holiday 
+1. Add a cal func that takes a working_day as input and returns the corresponding date
 1. Add a shortcut to go from nested menus directly back to main menu (maybe 99?)
-
-### Update Status Function
-1. Complete the module to include a final hook that writes to disk after status updates are
-   completed.
-    - I think it is reasonable to do this when user enters 'Done' for a batch of updates, as
-      opposed to after every TODO object update
-1. Add variations of this to the menu system
-    1. To change from 'open' / 'started' to 'complete' (modify the existing one to include 'started')
-    1. To change from 'open' to 'started'
-    1. To revert a 'complete' item to 'open' 
-    1. Consider a user-defined status update
-        - Accept user input for the desired current status(es) and the new status to operate upon,
-          and then run the module
-1. More robust error handling of user input (Don't go crazy - we ultimately want a web-based front
-   end)
-
-### General
+1. Add more robust error handling of user input to update_status()
+    - Don't go crazy - we ultimately want a web-based front end
 1. Menu should display the current 'Accounting Period' in the splash header
 1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 1. 'simple list' report - need to remove the additional lines if an owner is not present
     - code currently does not check, and puts a line between users, even if the user is not present
       in the report.
-1. Rethink accounting month check. When we have a working file, no need to continue to check for
-   accounting month. The user can select 'initiate a new accounting month' from the menu.
-    - When initiating a new month, include warnings about "will overwrite existing date; cannot be
-    undone, etc."
-    - or better: create a backup before initiating a new month, in case user wants to revert
+1. Create a backup before initiating a new month, in case user wants to revert
+1. Add exception testing to the initial read_date() call from main()
+    - ensure file exists
+    - ensure file is in correct format (i.e., returns at least one TODO record)
+        - Not exactly sure how to do this; maybe just a try / except block that will point the user
+          to initiate a new month or recover from backup if there is bad data?
 
 ## Main Concepts
 1. Web-based front-end would include a check-box type object, except with three states:
@@ -43,27 +37,22 @@
         - yellow=started
         - green=complete
    - Save this state to the server
-1. Eventually I'd like to add a separate module for general 'todo' items that are separate from the
+1. Feature: I'd like to add a separate module for general 'todo' items that are separate from the
    monthly recurring task list.
    - Think about what fields get inherited from TODO class, and what fields are unique to this new
      class (e.g. 'tags' for item categories may be useful in a general 'todo' list, whereas
    'working day' would not be)
    - probably want to write this to disk in a separate file
-1. Make initial population from 'recurring items list' a once a month activity (add to menu)
-    - After which, the default would be to load the working file at start up, unless the user asks
-    to initialize a new working file.
-    - Warn user if the accounting month in the saved file differs from the working accounting month:
-    ```bash
-    "A working file for 6/30/24 already exists. Are you sure you want to overwrite it?"
-    ```
+
 1. ADDING records - when assigning self.id, increment the last id in the list: todo_list[-1].id + 1
+1. Feature: When initiating a new accounting month, ask user if they would like to use the existing
+   file as the template or the previous recurring file. If the existing, update the recurring file
+   to match the existing file
+    - maybe a more elegant feature: show the user the differences and ask to select lines to add to
+      the recurring file on a go-forward basis.
 1. Build out modules to interact with data
-    - initialize a new accounting month - pull the recurring items into a new working month data
-    file. Include appropriate warnings to user that they risk overwriting an existing file
     - Methods in the TODO class:
-        - update status
-        - change owner
-        - change  working day
+        - change working day and date
         - modify task description
     - add and delete todo items
         - add would include a date, but not a working day.
@@ -73,6 +62,10 @@
 
 
 ## Bugs and  Refactoring
+1. update_status() has an "object of type none is not subscriptable" issue
+    - the code runs - I don't think it would ever return None, but maybe a mutability issue, so add
+      checks
+    - for similar reasons, also check for subscript value being out of range 
 1. General refactoring to move util or cal functions out of the main_func.py module.
     - Consider a separate module for report display
 1. assign_date func - Consider making the holiday_table a parameter to the function instead of a

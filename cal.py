@@ -31,3 +31,15 @@ def calc_calendar_weeks(first_monday: datetime) -> dict:
     week_start["week6"] = week_start["week5"] + timedelta(7)
     return week_start
 
+
+def eom(in_date: datetime) -> datetime:
+    if in_date.month == 12:
+        return datetime(in_date.year, 12, 31)
+    return datetime(in_date.year, in_date.month + 1, 1) - timedelta(1)
+
+
+def first_of_next_month(in_date: datetime) -> datetime:
+    if in_date.month == 12:
+        return datetime(in_date.year + 1, 1, 1)
+    return datetime(in_date.year, in_date.month + 1, 1)
+

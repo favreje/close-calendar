@@ -43,7 +43,7 @@ def test_weekly_display():
 def test_holiday_import():
     period_end = datetime(2024, 10, 31)
     beg_date = period_end + timedelta(1)
-    end_date = datetime(beg_date.year, beg_date.month + 1, 1) - timedelta(1)
+    end_date = cal.eom(beg_date)
     path = "data/holidays.txt"
     hol = util.pull_holidays(path)
     print("--- Begin test data for test_weekly_display ---")
@@ -96,7 +96,7 @@ def test_weekly_view(date):
     print(date)
 
 
-def test_read_write_funcs(working_list, accounting_period):
+def test_read_write_funcs(working_list):
         # --- Testing updated read_data() and write_data() to incorporate self.id class attribute
     for todo in working_list:
         if todo.id == 38:
@@ -113,5 +113,46 @@ def test_read_write_funcs(working_list, accounting_period):
         for todo in working_list:
             print(f"{todo.id:>2} {todo.status.value:<10} {todo.owner:<8} {todo.task}")
 
-        write_data(working_list, accounting_period)
+        write_data(working_list)
 
+
+def test_get_date():
+# ----- test get_date function -----
+    test_date = util.get_accounting_period()
+    print(f"\ntest_date= {test_date.strftime('%x')}")
+
+
+def test_init_month_end():
+# ----- test init_month_end func -----
+    todo_list, test_date = init_month_end()
+    if test_date and todo_list:
+        display_weekly_calendar(todo_list, test_date)
+
+
+def test_data_persist_write_status_update():
+# ----- test that data persists after change in status -----
+    accounting_period = util.get_accounting_period()
+    working_list = read_data()
+    update_status(working_list, [Status.OPEN, Status.STARTED], Status.COMPLETE)
+    write_data(working_list)
+    display_weekly_calendar(working_list, accounting_period)
+
+def test_data_persist_after_write():
+    accounting_period = datetime(2024, 7, 31)
+    working_list = read_data()
+    display_weekly_calendar(working_list, accounting_period)
+
+
+def test_read_write_accounting_period():
+    input_accounting_period = util.get_accounting_period()
+    write_accounting_period(input_accounting_period)
+    output_accounting_period = read_accounting_period()
+    print(f"Input Date: {input_accounting_period.strftime('%x')}")
+    print(f"Output Date: {output_accounting_period.strftime('%x')}")
+
+def main():
+    # test_init_month_end()
+    test_read_write_accounting_period()
+
+if __name__ == "__main__":
+    main()

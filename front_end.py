@@ -19,9 +19,10 @@ class MenuItem:
 
 
 class Menu:
-    def __init__(self, title):
+    def __init__(self, title, is_main_menu=False):
         self.title = title
         self.items = []
+        self.is_main_menu = is_main_menu
 
     def add_item(self, name, action=None, submenu=None):
         item = MenuItem(name, action, submenu)
@@ -64,7 +65,11 @@ class Menu:
             self.display()
             selection = self.get_selection()
             if selection == 0:
-                break
+                if self.is_main_menu:
+                    if input("Are you sure you want to exit? (y/n): ").strip().lower() in ('y', "yes"):
+                        break
+                else:
+                    break
             else:
                 selected_item = self.items[selection - 1]
                 if selected_item.action:

@@ -52,10 +52,28 @@ def pull_recurring_items(file_location: str) -> list:
         todo.id = i + 1
     return todo_list
 
-def write_data(todo_list: list, month_end:datetime):
-    file_location = "data/todo-data.txt"
+
+def write_accounting_period(date: datetime):
+    """
+    Takes a date representing the user's selected accounting period and stores it to a file.
+    """
+    file_location = "data/accounting-period.dat"
     with open(file_location, mode="w", encoding="utf-8") as file:
-        file.write(f"<eom>\n{month_end.strftime('%x')}\n</eom>\n")
+        file.write(f"{date.strftime('%x')}\n")
+
+
+def read_accounting_period() -> datetime:
+    """
+    Reads the current working accounting period from a data file and returns it.
+    """
+    file_location = "data/accounting-period.dat"
+    with open(file_location, mode="r", encoding="utf-8") as file:
+        date_string = file.read().strip()
+        return datetime.strptime(date_string, "%x")
+
+
+def write_data(todo_list: list):
+    file_location = "data/working-list.dat"
     with open(file_location, mode="a", encoding="utf-8") as file:
         for item in todo_list:
             file.write(f"<record>\n")
@@ -67,30 +85,18 @@ def write_data(todo_list: list, month_end:datetime):
             file.write(f"{item.id}\n")
             file.write(f"</record>\n")
             
-def read_data(month_end):
-    file_location = "data/todo-data.txt"
+def read_data():
+    file_location = "data/working-list.dat"
     with open(file_location, mode="r", encoding="utf-8") as file:
-        is_eom = False
         is_record_part = False
         this_record = []
         todo_list = []
         for line in file.readlines():
             if line == "\n":
                 continue
-            if line == "<eom>\n":
-               is_eom = True
-               continue
             if line == "<record>\n":
                 is_record_part = True
                 continue
-            if is_eom:
-                item_date = datetime.strptime(line.strip(), "%x")
-                if item_date != month_end:
-                    raise Exception(f"TODO data file is for Close: {item_date.strftime('%b %Y')}\n"
-                                   f"Current Close: {month_end.strftime('%b %Y')}"
-                                    )
-                else:
-                    is_eom = False
             if is_record_part:
                 this_record.append(line.strip())
             if line == "</record>\n":
@@ -111,10 +117,10 @@ def read_data(month_end):
 def assign_date(todo_list: list, close_month: datetime) -> list:
     # Iterate over each date in the month and assign dates based on working days.
     beg_date = close_month + timedelta(1)
-    end_date = datetime(beg_date.year, beg_date.month + 1, 1) - timedelta(1)
+    end_date = cal.eom(beg_date)
     working_day_table = {}
     # OPEN_ITEM: Consider making this a parameter if the holiday table will be used more than once
-    holiday_table = util.pull_holidays("data/holidays.txt")
+    holiday_table = util.pull_holidays("data/holidays.dat")
 
     # Populate the working_day_table with corresponding dates
     current_working_day = 1
@@ -146,9 +152,7 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
 
 
 def update_status(todo_list: list, current_status: list, new_status: Status):
-    print(todo_list)
-    print(current_status)
-    print(new_status)
+    was_modified = False
     display_list = util.get_list_segments(todo_list, current_status)
     if display_list:
         display_list_len = len(display_list)
@@ -158,6 +162,8 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
             util.print_display_list(display_list[sub_list_num])
             choice = input("\n (P)revious, (N)ext, (D)one, or Select Item: ").lower()
             if choice == "d":
+                if was_modified:
+                    write_data(todo_list)
                 break
             elif choice == "p":
                 if sub_list_num > 0:
@@ -181,6 +187,7 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
                             confirm = input("\nUpdate this item? (Y/n) ").lower() or 'y'
                             if confirm == 'y' or confirm == "yes":
                                 todo_list[i].status = new_status
+                                was_modified = True
                                 display_list = util.get_list_segments(todo_list, current_status)
                             break
                 else:
@@ -194,7 +201,7 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
     """
 
     # Get a list of the start of each week in the given month
-    todo_month = datetime(accounting_period.year, accounting_period.month + 1, 1)
+    todo_month = cal.first_of_next_month(accounting_period)
     first_monday = cal.calc_first_monday(todo_month)
     weeks = cal.calc_calendar_weeks(first_monday)
 
@@ -271,3 +278,28 @@ def simple_report(todo_list: list, status:list):
                     print(report_str)
     input("...")
 
+
+def init_month_end():
+    todo_file_location = "data/recurring-tasks.dat"
+    util.clear_screen()
+    splash_display = f"\n======= INITIALIZE A NEW CLOSE CALENDAR ========\n" 
+    print(splash_display)
+    accounting_period = util.get_accounting_period()
+    user_confirm = input(
+        f"\n****************************************************************"
+        f"\nWARNING: You are about to initialize a new accounting period.\n"
+        f"This process will overwrite your existing data file.\n"
+        f"****************************************************************"
+        f"\n\nPlease confirm that you wish to continue (y/n): "
+    ).lower()
+    if user_confirm not in ("y", "yes"):
+        # return []
+        return None, None
+    todo_list = pull_recurring_items(todo_file_location) 
+    todo_list = assign_date(todo_list, accounting_period)
+    write_data(todo_list)
+    write_accounting_period(accounting_period)
+    print(f"\n\nA new Close Calendar for {accounting_period.strftime('%b-%y')} was successfully created.")
+    input("Press 'Enter' to continue...")
+
+    return todo_list, accounting_period
