@@ -193,6 +193,9 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
                             break
                 else:
                     input(f"\nSelection is out of range. Please select again... ")
+    else:
+        print(f"\nNo items met your criteria. Press 'Enter' to return to the Menu.")
+        input("---")
 
 
 def display_weekly_calendar(todo_list: list, accounting_period: datetime):
@@ -228,7 +231,7 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
                     print(f"{43 * ' '}", end="")
         print("\n")
         
-    input("...")
+    input("---")
 
     
 def simple_report(todo_list: list, status:list):
@@ -277,7 +280,7 @@ def simple_report(todo_list: list, status:list):
             else:
                 if todo.owner == owner:
                     print(report_str)
-    input("...")
+    input("---")
 
 
 def init_month_end():

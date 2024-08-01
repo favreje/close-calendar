@@ -1,7 +1,6 @@
 # TO-DO List
 
 ## Immediate
-- init_month_end(): remove return values, and require a restart after initiating a new month end. 
 
 ## Current Focus
 1. Add a cal func that takes a date as input and returns the corresponding working_day

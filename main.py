@@ -25,8 +25,12 @@ def main():
                             working_list, ["complete",]))
     report_menu.add_item("List View - All Items", action=fe.Action(simple_report,
                             working_list, ["all",]))
-    status_update_menu.add_item("Update Status to Complete", action=fe.Action(update_status,
+    status_update_menu.add_item("Update Status to 'Complete'", action=fe.Action(update_status,
                                   working_list, [Status.OPEN, Status.STARTED], Status.COMPLETE))
+    status_update_menu.add_item("Update Status to 'Started'", action=fe.Action(update_status,
+                                  working_list, [Status.OPEN,], Status.STARTED))
+    status_update_menu.add_item("Revert Status to 'Open'", action=fe.Action(update_status,
+                                  working_list, [Status.COMPLETE, Status.STARTED], Status.OPEN))
 
     main_menu.run()
 

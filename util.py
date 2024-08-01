@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta
-from os import system
+import os 
+import platform
 import cal
-
-
-clear_screen = lambda: system("clear")
 
 
 SPACING = " " * 15
@@ -11,6 +9,13 @@ UNDERLINE = "-" * 214
 
 # length of date + spacing on each end - indentation on each end
 CELL_WIDTH = 6 + (len(SPACING) * 2) 
+
+
+def clear_screen():
+    if platform.system() == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 def get_all_owners(todo_list):
@@ -99,9 +104,11 @@ def get_list_segments(todo_list: list, criteria: list):
     chunks = []
     sub_list = []
     short_list = list(filter(lambda x: x.status in criteria, todo_list))
-    length = len(short_list)
-    if length <= items_per_page:
-        return chunks.append(short_list)
+    if not short_list:
+        return []
+    if len(short_list) <= items_per_page:
+        chunks.append(short_list)
+        return chunks
     for i, item in enumerate(short_list):
         if i != 0 and i % (items_per_page) == 0:
             chunks.append(sub_list)
