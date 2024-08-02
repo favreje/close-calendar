@@ -19,9 +19,10 @@ class MenuItem:
 
 
 class Menu:
-    def __init__(self, title, is_main_menu=False):
+    def __init__(self, title, acct_period, is_main_menu=False):
         self.title = title
         self.items = []
+        self.acct_period = acct_period
         self.is_main_menu = is_main_menu
 
     def add_item(self, name, action=None, submenu=None):
@@ -40,12 +41,14 @@ class Menu:
     def display(self):
         width = 35
         char = "-"
-        splash_display = f"\n ======= MONTHLY CLOSE CALENDAR ======== \n\n"
+        acct_string = self.acct_period.strftime("%b '%y").upper()
+        splash_display = f" ======= MONTHLY CLOSE CALENDAR  ======== "
+        splash_ln_2 = f"Month Ended: {acct_string}".center(width + 5)
         title_display = self.centered_title(width, char)
         util.clear_screen()
-        print(f"{splash_display}{title_display}")
+        print(f"\n{splash_display}\n\n{splash_ln_2}\n\n{title_display}")
         for i, item in enumerate(self.items, start=1):
-            print(f"{i}. {item.name}")
+            print(f"  {i}. {item.name}")
         # print(f"\n'0' to Exit")
 
 

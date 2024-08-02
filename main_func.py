@@ -212,10 +212,10 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
     util.clear_screen() 
     for week in weeks:
 
-        # Populate the weely calendar with todo items and holidays
-        test_matrix = util.pivot_week_items(todo_list, weeks[week])
+        # Populate the weekly calendar with todo items and holidays
+        matrix = util.pivot_week_items(todo_list, weeks[week])
         util.draw_week(weeks[week])
-        for i, row in enumerate(test_matrix):
+        for i, row in enumerate(matrix):
             if i != 0:
                 print()
             for i in row:
@@ -232,54 +232,29 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
         print("\n")
         
     input("---")
-
     
+
 def simple_report(todo_list: list, status:list):
     """
     Prints a simple report filtered on 'status'
     """
-    owner_list = util.get_all_owners(todo_list)
-    status_len = len(status)
-
+    owner_dict = {}
+    for item in todo_list:
+        if item.status in status:
+            if item.owner not in owner_dict:
+                owner_dict[item.owner] = []
+            owner_dict[item.owner].append(item)
     util.clear_screen()
+    if not owner_dict:
+        input(f"\n\nNo items for this report. Press Enter to return to the Menu.\n---")
+        return
     print(f"Wd Date     Day Status   Owner   Task")
-    print("---------------------------------------------------------------------")
-    for i, owner in enumerate(owner_list):
-        if i > 0:
-            print()
-        for todo in todo_list:
-            report_str = (f"{todo.work_day:>2} {datetime.strftime(todo.date, '%m/%d/%y %a')} "
-                f"{todo.status.value:<8} {todo.owner:<7} {todo.task}")
-            if "all" in status and todo.owner == owner:
-                print(report_str)
-            elif status_len == 1: 
-                if "open" in status:
-                    if todo.status == Status.OPEN and todo.owner == owner:
-                        print(report_str)
-                elif "started" in status:
-                    if todo.status == Status.STARTED and todo.owner == owner:
-                        print(report_str)
-                elif "complete" in status:
-                    if todo.status == Status.COMPLETE and todo.owner == owner:
-                        print(report_str)
-                else:
-                    if todo.owner == owner:
-                        print(report_str)
-            elif "open" in status and "started" in status:
-                if ((todo.status == Status.OPEN or todo.status == Status.STARTED)
-                        and todo.owner == owner):
-                    print(report_str)
-            elif "open" in status and "complete" in status:
-                if ((todo.status == Status.OPEN or todo.status == Status.COMPLETE)
-                        and todo.owner == owner):
-                    print(report_str)
-            elif "started" in status and "complete" in status:
-                if ((todo.status == Status.STARTED or todo.status == Status.COMPLETE)
-                    and todo.owner == owner):
-                    print(report_str)
-            else:
-                if todo.owner == owner:
-                    print(report_str)
+    print("---------------------------------------------------------------------", end="")
+    for k in owner_dict:
+        print()
+        for i in owner_dict[k]:
+            print(f"{i.work_day:>2} {datetime.strftime(i.date, '%m/%d/%y %a')} "
+                    f"{i.status.value:<8} {i.owner:<7} {i.task}")
     input("---")
 
 

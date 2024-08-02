@@ -1,26 +1,25 @@
 # TO-DO List
 
 ## Immediate
-
-## Current Focus
 1. Add a cal func that takes a date as input and returns the corresponding working_day
     - with an exception if the date falls on a weekend or holiday
     - to be used in a routine that would suggest the nearest working_day if weekend or holiday 
 1. Add a cal func that takes a working_day as input and returns the corresponding date
-1. Add a shortcut to go from nested menus directly back to main menu (maybe 99?)
+1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
+
+## Current Focus
+1. Add functionality to simple_report() by adding a 'filtered_by' parameter
+    - Currently hard coded to filter by status only
+    - Filter by multiple TODO variables (e.g., owner and status; owner and date, etc.)
 1. Add more robust error handling of user input to update_status()
     - Don't go crazy - we ultimately want a web-based front end
-1. Menu should display the current 'Accounting Period' in the splash header
-1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
-1. 'simple list' report - need to remove the additional lines if an owner is not present
-    - code currently does not check, and puts a line between users, even if the user is not present
-      in the report.
 1. Create a backup before initiating a new month, in case user wants to revert
-1. Add exception testing to the initial read_date() call from main()
+1. Add exception testing to the initial read_data() call from main()
     - ensure file exists
     - ensure file is in correct format (i.e., returns at least one TODO record)
         - Not exactly sure how to do this; maybe just a try / except block that will point the user
           to initiate a new month or recover from backup if there is bad data?
+1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 
 ## Issues
 1. Add initiate_month_end_menu to menu system, and add the init_month_end func as an executable
@@ -29,6 +28,8 @@
     - Seems overly complex to get the menu logic to return values to main(), allowing for
     continuation of the application after initiating a new accounting period, and I don't want to
     make working_list and accounting_period global vars
+    - Consider a State class the encapsulates any return parameters from the menu modules and use
+    it to pass the data around from one menu module to the next. Similar to an api approach. 
 
 ## Main Concepts
 1. Web-based front-end would include a check-box type object, except with three states:
