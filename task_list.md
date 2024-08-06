@@ -22,14 +22,10 @@
 1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 
 ## Issues
-1. Add initiate_month_end_menu to menu system, and add the init_month_end func as an executable
-    - For now, I'm going to remove return values, and require a restart after initiating a new
-    month end. This will pull the working_list and accounting_period objects from data files.
-    - Seems overly complex to get the menu logic to return values to main(), allowing for
-    continuation of the application after initiating a new accounting period, and I don't want to
-    make working_list and accounting_period global vars
-    - Consider a State class the encapsulates any return parameters from the menu modules and use
-    it to pass the data around from one menu module to the next. Similar to an api approach. 
+1. Initiate_month_end_menu difficult to get the current Menu class to return a value
+    - Consider a State class the encapsulates any return parameters
+    - Use this class to pass data around from one menu module to the next.
+    - Similar to an api approach. 
 
 ## Main Concepts
 1. Web-based front-end would include a check-box type object, except with three states:

@@ -26,6 +26,25 @@ def get_all_owners(todo_list):
     return owner_list
 
 
+def write_accounting_period(date: datetime):
+    """
+    Takes a date representing the user's selected accounting period and stores it to a file.
+    """
+    file_location = "data/accounting-period.dat"
+    with open(file_location, mode="w", encoding="utf-8") as file:
+        file.write(f"{date.strftime('%x')}\n")
+
+
+def read_accounting_period() -> datetime:
+    """
+    Reads the current working accounting period from a data file and returns it.
+    """
+    file_location = "data/accounting-period.dat"
+    with open(file_location, mode="r", encoding="utf-8") as file:
+        date_string = file.read().strip()
+        return datetime.strptime(date_string, "%x")
+
+
 def draw_week(first_monday: datetime):
     """
     Takes a datetime representing the first Monday for one of six weeks and draws the calendar
@@ -38,11 +57,12 @@ def draw_week(first_monday: datetime):
     print("\n" + UNDERLINE)
 
 
-def pull_holidays(file_location: str) -> dict:
+def pull_holidays() -> dict:
     """
     Reads text data from 'file_location' and returns a dict with key (datetime) representing the
     holiday date and value (str) representing the holiday description.
     """
+    file_location = "data/holidays.dat"
     holiday_dict = {}
     with open(file_location) as file:
         for line in file.readlines():
@@ -120,6 +140,7 @@ def get_list_segments(todo_list: list, criteria: list):
         chunks.append(sub_list)
     return chunks
 
+
 def get_accounting_period() -> datetime:
     while True:
         try:
@@ -146,4 +167,33 @@ def get_accounting_period() -> datetime:
             print("Invalid entry. Please try again")
 
 
+def get_date_from_user(prompt: str) -> datetime:
+    while True:
+        try:
+            user_entry = input(f"{prompt} (mm/dd/yyyy): ").lower()
+            date_parts = user_entry.split("/")
+            if len(date_parts[-1]) == 2:
+                date_parts[-1] = "20" + date_parts[-1]
+            user_date_str = "/".join(date_parts)
+            return datetime.strptime(user_date_str, "%m/%d/%Y")
+        except ValueError:
+            print("Invalid entry. Please try again")
+
+
+def get_working_days() -> dict:
+    holidays = pull_holidays() # Need to memoize this
+    acct_period = read_accounting_period()
+    wd = 0
+    working_days = {}
+    start_date = cal.first_of_next_month(acct_period)
+    for offset in range(0, 91):
+        this_date = start_date + timedelta(offset)
+        if this_date in holidays:
+            working_days[this_date] = ("holiday", None)
+        elif this_date.weekday() > 4: 
+            working_days[this_date] = ("weekend", None)
+        else:
+            wd += 1
+            working_days[this_date] = ("wd", wd)
+    return working_days
 

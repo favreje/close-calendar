@@ -6,7 +6,7 @@ def main():
     all = [Status.OPEN, Status.STARTED, Status.COMPLETE]
 
     # ----- Gather data for the current accounting cycle at application launch -----
-    acct_period = read_accounting_period()
+    acct_period = util.read_accounting_period()
     working_list = read_data()
 
     # ----- Configuration of the Menu System -----
@@ -18,7 +18,7 @@ def main():
     main_menu.add_item("Reports", submenu=report_menu)
     main_menu.add_item("Change Task Status", submenu=status_update_menu)
     main_menu.add_item("Modify Tasks", submenu=modify_task_menu)
-    main_menu.add_item("Initiate New Month End", action=fe.Action(init_month_end)) 
+    main_menu.add_item("Initiate New Month End", action=fe.Action(init_month_end, acct_period)) 
     report_menu.add_item("Weekly View", action=fe.Action(display_weekly_calendar,
                             working_list, acct_period))
     report_menu.add_item("List View - Open and Started Items", action=fe.Action(simple_report,

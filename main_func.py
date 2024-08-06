@@ -32,45 +32,22 @@ def pull_recurring_items(file_location: str) -> list:
     class objects, returning the list.
     """
     todo_list = []
+    status = Status.OPEN
 
     with open(file_location) as file:
         for row, line in enumerate(file.readlines()):
-            if  row > 1 and line != "\n": # To ignore the header and the EOF character
-                stat_str = line[3:11].strip()
-                if stat_str == "open":
-                    stat = Status.OPEN
-                elif stat_str == "started":
-                    stat = Status.STARTED
-                elif stat_str == "complete":
-                    stat = Status.COMPLETE
-                else:
-                    stat = Status.OPEN
+            if row > 1 and line != "\n": # To ignore header and any blank lines
+                work_day = int(line[0:2])
+                owner = line[3:11].strip()
+                task = line[12:45].strip()
+                id = row - 1
+                this_todo = TODO(work_day, status, owner, task)
+                this_todo.id = id
+                todo_list.append(this_todo)
 
-                todo_list.append(TODO(int(line[0:2]), stat, line[12:20].strip(),
-                                      line[21:57].strip()))
-    # Assign id
-    for i, todo in enumerate(todo_list):
-        todo.id = i + 1
     return todo_list
 
 
-def write_accounting_period(date: datetime):
-    """
-    Takes a date representing the user's selected accounting period and stores it to a file.
-    """
-    file_location = "data/accounting-period.dat"
-    with open(file_location, mode="w", encoding="utf-8") as file:
-        file.write(f"{date.strftime('%x')}\n")
-
-
-def read_accounting_period() -> datetime:
-    """
-    Reads the current working accounting period from a data file and returns it.
-    """
-    file_location = "data/accounting-period.dat"
-    with open(file_location, mode="r", encoding="utf-8") as file:
-        date_string = file.read().strip()
-        return datetime.strptime(date_string, "%x")
 
 
 def write_data(todo_list: list):
@@ -121,7 +98,7 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
     end_date = cal.eom(beg_date)
     working_day_table = {}
     # OPEN_ITEM: Consider making this a parameter if the holiday table will be used more than once
-    holiday_table = util.pull_holidays("data/holidays.dat")
+    holiday_table = util.pull_holidays()
 
     # Populate the working_day_table with corresponding dates
     current_working_day = 1
@@ -258,12 +235,14 @@ def simple_report(todo_list: list, status:list):
     input("---")
 
 
-def init_month_end():
+def init_month_end(accounting_period):
     todo_file_location = "data/recurring-tasks.dat"
+    acct_string = accounting_period.strftime("%b '%y").upper()
+    width = 43
     util.clear_screen()
     splash_display = f"\n======= INITIALIZE A NEW CLOSE CALENDAR ========\n" 
-    print(splash_display)
-    accounting_period = util.get_accounting_period()
+    splash_ln_2 = f"Current Month-End Close: {acct_string}".center(width)
+    print(splash_display, splash_ln_2)
     user_confirm = input(
         f"\n****************************************************************"
         f"\nWARNING: You are about to initialize a new accounting period.\n"
@@ -272,12 +251,13 @@ def init_month_end():
         f"\n\nPlease confirm that you wish to continue (y/n): "
     ).lower()
     if user_confirm not in ("y", "yes"):
-        # return []
-        return None, None
+        return None, None 
+    print()
+    accounting_period = util.get_accounting_period()
     todo_list = pull_recurring_items(todo_file_location) 
     todo_list = assign_date(todo_list, accounting_period)
     write_data(todo_list)
-    write_accounting_period(accounting_period)
+    util.write_accounting_period(accounting_period)
     print(f"\n\nA new Close Calendar for {accounting_period.strftime('%B %Y')} was successfully created.")
     print(f"Please restart the application for the change to take effect.\n")
     input("Press 'Enter' to continue...")

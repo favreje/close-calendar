@@ -1,7 +1,7 @@
-import sys
 from datetime import datetime as dt, timedelta
 from main_func import *
 import cal
+import util
 
 test_date = dt(2024, 6, 30)
 test_date = test_date + timedelta(1)
@@ -45,8 +45,7 @@ def test_holiday_import():
     period_end = datetime(2024, 10, 31)
     beg_date = period_end + timedelta(1)
     end_date = cal.eom(beg_date)
-    path = "data/holidays.txt"
-    hol = util.pull_holidays(path)
+    hol = util.pull_holidays()
     print("--- Begin test data for test_weekly_display ---")
     print("Complete Holiday List:")
     for k in hol:
@@ -123,14 +122,15 @@ def test_get_date():
 
 
 def test_init_month_end():
-    todo_list, test_date = init_month_end()
+    period = util.get_accounting_period()
+    todo_list, test_date = init_month_end(period)
     if test_date and todo_list:
         display_weekly_calendar(todo_list, test_date)
 
 
 def test_data_persist_write_status_update():
 # ----- test that data persists after change in status -----
-    accounting_period = read_accounting_period()
+    accounting_period = util.read_accounting_period()
     working_list = read_data()
     update_status(working_list, [Status.OPEN, Status.STARTED], Status.COMPLETE)
     write_data(working_list)
@@ -139,7 +139,7 @@ def test_data_persist_write_status_update():
 
 def test_data_persist_after_write():
     # ----- Testing Complete -----
-    accounting_period = read_accounting_period()
+    accounting_period = util.read_accounting_period()
     working_list = read_data()
     simple_report(working_list, ["complete",])
     display_weekly_calendar(working_list, accounting_period)
@@ -148,19 +148,47 @@ def test_data_persist_after_write():
 def test_read_write_accounting_period():
     # ----- Testing Complete -----
     input_accounting_period = util.get_accounting_period()
-    write_accounting_period(input_accounting_period)
-    output_accounting_period = read_accounting_period()
+    util.write_accounting_period(input_accounting_period)
+    output_accounting_period = util.read_accounting_period()
     print(f"Input Date: {input_accounting_period.strftime('%x')}")
     print(f"Output Date: {output_accounting_period.strftime('%x')}")
 
 
-def main():
-    accounting_period = dt(2024, 7, 31)
-    print(f"\n\nA new Close Calendar for {accounting_period.strftime('%B %Y')} was successfully created.")
-    print(f"Please restart the application for the change to take effect.\n")
-    input("Press 'Enter' to continue...")
-    sys.exit(0)
+def test_get_working_days():
+    wd_table = util.get_working_days()
+    for i, k in enumerate(wd_table):
+        if not wd_table[k][1]:
+            wd = ""
+        else:
+            wd = wd_table[k][1]
+        print(f"{i + 1:>2} {k.strftime('%x')} {wd_table[k][0]:<8} {wd:>2}")
 
+
+def main():
+    while True:
+        try:
+            date = util.get_date_from_user("Enter a test date:")
+            wd_table = util.get_working_days()
+            if not wd_table[date][1]:
+                d = -1
+                while not wd_table[date + timedelta(d)][1]:
+                    d -= 1
+                nearest_date = (date + timedelta(d), wd_table[date + timedelta(d)][1])
+                date_category = wd_table[date][0]
+
+                print(f"The date entered falls on a {date_category}.\nNearest working day "
+                        f"before {date.strftime('%x')}: {nearest_date[0].strftime('%x')}\nWorking "
+                        f"day: {nearest_date[1]:<8}" 
+                      )
+            else:
+                print(f"{date.strftime('%x')} {wd_table[date][0]:<8} {wd_table[date][1]:>2}")
+
+        except KeyError:
+            print("Date entered is out of range.")
+
+        except KeyboardInterrupt:
+            print("\n\n~~~ Here is my graceful exit! ~~~")
+            sys.exit()
 
 if __name__ == "__main__":
     main()
