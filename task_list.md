@@ -1,11 +1,6 @@
 # TO-DO List
 
 ## Immediate
-1. Add a cal func that takes a date as input and returns the corresponding working_day
-    - with an exception if the date falls on a weekend or holiday
-    - to be used in a routine that would suggest the nearest working_day if weekend or holiday 
-1. Add a cal func that takes a working_day as input and returns the corresponding date
-1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 
 ## Current Focus
 1. Add functionality to simple_report() by adding a 'filtered_by' parameter
@@ -19,7 +14,6 @@
     - ensure file is in correct format (i.e., returns at least one TODO record)
         - Not exactly sure how to do this; maybe just a try / except block that will point the user
           to initiate a new month or recover from backup if there is bad data?
-1. Add 'Change Date' module next - then it would be usable while I continue to update functionality
 
 ## Issues
 1. Initiate_month_end_menu difficult to get the current Menu class to return a value
@@ -64,6 +58,8 @@
 
 
 ## Bugs and  Refactoring
+1. Need to refactor update_status() and change_due_date() to make it DRY (it does not reuse any of
+   the task selection code!) 
 1. update_status() has an "object of type none is not subscriptable" issue
     - the code runs - I don't think it would ever return None, but maybe a mutability issue, so add
       checks

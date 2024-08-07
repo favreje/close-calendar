@@ -43,3 +43,15 @@ def first_of_next_month(in_date: datetime) -> datetime:
         return datetime(in_date.year + 1, 1, 1)
     return datetime(in_date.year, in_date.month + 1, 1)
 
+def get_date_from_working_day(wd: int, wd_table: dict) -> datetime | None:
+    """
+    Returns the corresponding date of the working day (wd) parameter within the wd_table dict.
+    Return None if wd is out of range.
+    """
+    for date in wd_table:
+        if wd_table[date][1] == wd:
+            return date
+    return None
+
+
+

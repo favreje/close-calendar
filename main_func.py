@@ -130,6 +130,7 @@ def assign_date(todo_list: list, close_month: datetime) -> list:
 
 
 def update_status(todo_list: list, current_status: list, new_status: Status):
+    splash = f"\n{' ' * 12}=============== UPDATE COMPLETION STATUS =============== \n\n"
     was_modified = False
     display_list = util.get_list_segments(todo_list, current_status)
     if display_list:
@@ -137,7 +138,7 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
         sub_list_num = 0
         while True:
             util.clear_screen()
-            util.print_display_list(display_list[sub_list_num])
+            util.print_display_list(display_list[sub_list_num], splash)
             choice = input("\n (P)revious, (N)ext, (D)one, or Select Item: ").lower()
             if choice == "d":
                 if was_modified:
@@ -158,7 +159,7 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
                     # Get and confirm choice before updating
                     for i, todo in enumerate(todo_list):
                         if todo.id == sel_num:
-                            print(f"  ID  WD  Date     Day  Status   Owner   Task\n {'-' * 78}\n"
+                            print(f"\n  ID  WD  Date     Day  Status   Owner   Task\n {'-' * 78}\n"
                                     f"{todo.id:>4}{todo.work_day:>4}  "
                                     f"{datetime.strftime(todo.date, '%m/%d/%y %a')}"
                                     f"  {todo.status.value:<8} {todo.owner:<7} {todo.task}")
@@ -166,7 +167,61 @@ def update_status(todo_list: list, current_status: list, new_status: Status):
                             if confirm == 'y' or confirm == "yes":
                                 todo_list[i].status = new_status
                                 was_modified = True
-                                display_list = util.get_list_segments(todo_list, current_status)
+                                new_display_list = util.get_list_segments(todo_list, current_status)
+                                if new_display_list:
+                                    display_list = new_display_list
+                            break
+                else:
+                    input(f"\nSelection is out of range. Please select again... ")
+    else:
+        print(f"\nNo items met your criteria. Press 'Enter' to return to the Menu.")
+        input("---")
+
+
+def change_due_date(todo_list: list):
+    splash = f"\n{' ' * 6}{'=' * 25} UPDATE DUE DATE {'=' * 25}\n\n"
+    was_modified = False
+    all = [Status.OPEN, Status.STARTED, Status.COMPLETE]
+    wd_table = util.working_days_table()
+    display_list = util.get_list_segments(todo_list, all)
+    if display_list:
+        display_list_len = len(display_list)
+        sub_list_num = 0
+        while True:
+            util.clear_screen()
+            util.print_display_list(display_list[sub_list_num], splash)
+            choice = input("\n (P)revious, (N)ext, (D)one, or Select Item: ").lower()
+            if choice == "d":
+                if was_modified:
+                    write_data(todo_list)
+                break
+            elif choice == "p":
+                if sub_list_num > 0:
+                    sub_list_num -= 1
+                util.clear_screen()
+            elif choice == "n":
+                if sub_list_num < display_list_len - 1:
+                    sub_list_num += 1
+                util.clear_screen()
+            elif choice.isnumeric():
+                available_to_select = [i.id for i in display_list[sub_list_num]]
+                sel_num = int(choice)
+                if sel_num in available_to_select:
+                    # Get and confirm choice before updating
+                    for i, todo in enumerate(todo_list):
+                        if todo.id == sel_num:
+                            print(f"\n  ID  WD  Date     Day  Status   Owner   Task\n {'-' * 78}\n"
+                                    f"{todo.id:>4}{todo.work_day:>4}  "
+                                    f"{datetime.strftime(todo.date, '%m/%d/%y %a')}"
+                                    f"  {todo.status.value:<8} {todo.owner:<7} {todo.task}")
+                            confirm = input("\nUpdate this item? (Y/n) ").lower() or 'y'
+                            if confirm == 'y' or confirm == "yes":
+                                modified_date = util.grab_new_date(wd_table)
+                                if modified_date:
+                                    todo_list[i].date = modified_date[0]
+                                    todo_list[i].work_day = modified_date[1]
+                                    was_modified = True
+                                    display_list = util.get_list_segments(todo_list, all)
                             break
                 else:
                     input(f"\nSelection is out of range. Please select again... ")

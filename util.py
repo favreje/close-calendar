@@ -107,10 +107,9 @@ def pivot_week_items(todo_list: list, first_monday: datetime) -> list:
     return matrix
 
 
-def print_display_list(sub_list):
+def print_display_list(sub_list, splash):
     page_width = 78
     clear_screen()
-    splash = f"\n{' ' * 12}=============== UPDATE COMPLETION STATUS =============== \n\n"
     header = f"  ID  WD  Date     Day  Status   Owner   Task\n {'-' * page_width}"
     print(splash)
     print(header)
@@ -180,9 +179,66 @@ def get_date_from_user(prompt: str) -> datetime:
             print("Invalid entry. Please try again")
 
 
-def get_working_days() -> dict:
-    holidays = pull_holidays() # Need to memoize this
-    acct_period = read_accounting_period()
+def grab_new_date(wd_table: dict) -> tuple | None:
+    """
+    Gets a new date and the corresponding working day from the user and returns a
+    tuple (date, working_day). If user elects 'Quit', then returns None
+    """
+    prompt = f"Enter the new date (mm/yy/dddd), working day (d), or (Q)uit: "
+    while True:
+        try:
+            # Get input from user
+            user_entry = input(prompt).lower()
+            if user_entry in ("q", "quit"):
+                return None
+            if "/" in user_entry:
+                date_parts = user_entry.split("/")
+                if len(date_parts[-1]) == 2:
+                    date_parts[-1] = "20" + date_parts[-1]
+                user_date_str = "/".join(date_parts)
+                date =  datetime.strptime(user_date_str, "%m/%d/%Y")
+            else:
+                date = cal.get_date_from_working_day(int(user_entry),wd_table)
+                if not date:
+                    raise KeyError
+
+            # Test for Weekends and Holidays and if so, suggest earliest working day
+            if not wd_table[date][1]:
+                d = -1
+                while not wd_table[date + timedelta(d)][1]:
+                    d -= 1
+                nearest_date = (date + timedelta(d), wd_table[date + timedelta(d)][1])
+                date_category = wd_table[date][0]
+
+                print(f"\n{date.strftime('%d-%b-%Y')} falls on a {date_category}."
+                    f"\nNearest working day: {nearest_date[0].strftime('%x'):>8}"
+                    f"\nWorking day:{' ' * 15}{nearest_date[1]:0>2}" 
+                      )
+                confirm = input("\nAccept this date? (Y/n): ").lower() or 'y'
+                if confirm == 'y' or confirm == "yes":
+                    return nearest_date
+            else:
+                print(f"\nNew Date: {date.strftime('%x'):>11}\nWorking Day:{' ' * 7}"
+                    f"{wd_table[date][1]:0>2}")
+                confirm = input("\nAccept this date? (Y/n): ").lower() or 'y'
+                if confirm == 'y' or confirm == "yes":
+                    return date, wd_table[date][1]
+
+        except KeyError:
+            print("Date entered is out of range.")
+
+        except ValueError:
+            print("Invalid entry. Please try again")
+
+
+def working_days_table() -> dict:
+    """
+    Returns a dictionary of working days for 90 days after the current period end. The dict keys 
+    are a 90-day series of dates, with a tuple value (status: str, working_day: int). Status will
+    be one of "weekend", "holiday", or "wd". 
+    """
+    holidays = pull_holidays() # Memoize this
+    acct_period = read_accounting_period() # Memoize this
     wd = 0
     working_days = {}
     start_date = cal.first_of_next_month(acct_period)

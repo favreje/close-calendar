@@ -42,7 +42,7 @@ class Menu:
         width = 35
         char = "-"
         acct_string = self.acct_period.strftime("%b '%y").upper()
-        splash_display = f" ======= MONTHLY CLOSE CALENDAR  ======== "
+        splash_display = f" ======= MONTHLY CLOSE CALENDAR ======== "
         splash_ln_2 = f"Month Ended: {acct_string}".center(width + 5)
         title_display = self.centered_title(width, char)
         util.clear_screen()

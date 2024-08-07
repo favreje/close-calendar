@@ -155,7 +155,7 @@ def test_read_write_accounting_period():
 
 
 def test_get_working_days():
-    wd_table = util.get_working_days()
+    wd_table = util.working_days_table()
     for i, k in enumerate(wd_table):
         if not wd_table[k][1]:
             wd = ""
@@ -163,12 +163,21 @@ def test_get_working_days():
             wd = wd_table[k][1]
         print(f"{i + 1:>2} {k.strftime('%x')} {wd_table[k][0]:<8} {wd:>2}")
 
+def test_get_date_from_working_day():
+    wd_table = util.working_days_table()
+    for i in range(20, 81):
+        date = cal.get_date_from_working_day(i, wd_table)
+        if date:
+            print(f"Working day: {i:>2} Date: {date.strftime('%x')}")
+        else:
+            print(f"Working day: {i:>2} Date: out of range")
+            
 
-def main():
+def code_to_add():
     while True:
         try:
             date = util.get_date_from_user("Enter a test date:")
-            wd_table = util.get_working_days()
+            wd_table = util.working_days_table()
             if not wd_table[date][1]:
                 d = -1
                 while not wd_table[date + timedelta(d)][1]:
@@ -189,6 +198,13 @@ def main():
         except KeyboardInterrupt:
             print("\n\n~~~ Here is my graceful exit! ~~~")
             sys.exit()
+
+
+def main():
+    accounting_period = util.read_accounting_period()
+    working_list = read_data()
+    change_due_date(working_list)
+    display_weekly_calendar(working_list, accounting_period)
 
 if __name__ == "__main__":
     main()
