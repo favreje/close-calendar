@@ -211,15 +211,16 @@ def grab_new_date(wd_table: dict) -> tuple | None:
                 date_category = wd_table[date][0]
 
                 print(f"\n{date.strftime('%d-%b-%Y')} falls on a {date_category}."
-                    f"\nNearest working day: {nearest_date[0].strftime('%x'):>8}"
-                    f"\nWorking day:{' ' * 15}{nearest_date[1]:0>2}" 
+                    f"\nNearest working day: {nearest_date[0].strftime('%m/%d/%y')}"
+                    f"\nWeekday:{nearest_date[0].strftime('%a'):>16}"
+                    f"\nWorking day:{' ' * 9}{nearest_date[1]:0>2}" 
                       )
                 confirm = input("\nAccept this date? (Y/n): ").lower() or 'y'
                 if confirm == 'y' or confirm == "yes":
                     return nearest_date
             else:
-                print(f"\nNew Date: {date.strftime('%x'):>11}\nWorking Day:{' ' * 7}"
-                    f"{wd_table[date][1]:0>2}")
+                print(f"\nNew Date: {date.strftime('%m/%d/%y'):>11}\nWeekday:{date.strftime('%a'):>8}"
+                      f"\nWorking Day: {wd_table[date][1]:0>2}")
                 confirm = input("\nAccept this date? (Y/n): ").lower() or 'y'
                 if confirm == 'y' or confirm == "yes":
                     return date, wd_table[date][1]

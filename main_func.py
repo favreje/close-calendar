@@ -266,27 +266,56 @@ def display_weekly_calendar(todo_list: list, accounting_period: datetime):
     input("---")
     
 
-def simple_report(todo_list: list, status:list):
+def report_by_day(todo_list: list, status:list):
     """
-    Prints a simple report filtered on 'status'
+    Prints a simple report filtered on 'status' grouping by work_day
     """
-    owner_dict = {}
-    for item in todo_list:
-        if item.status in status:
-            if item.owner not in owner_dict:
-                owner_dict[item.owner] = []
-            owner_dict[item.owner].append(item)
+    filtered_list = sorted([i for i in todo_list if i.status in status], key=lambda i: i.work_day)
     util.clear_screen()
-    if not owner_dict:
+    if not filtered_list:
         input(f"\n\nNo items for this report. Press Enter to return to the Menu.\n---")
         return
+    current_day = filtered_list[0].work_day
     print(f"Wd Date     Day Status   Owner   Task")
-    print("---------------------------------------------------------------------", end="")
-    for k in owner_dict:
-        print()
-        for i in owner_dict[k]:
-            print(f"{i.work_day:>2} {datetime.strftime(i.date, '%m/%d/%y %a')} "
-                    f"{i.status.value:<8} {i.owner:<7} {i.task}")
+    print("---------------------------------------------------------------------")
+    for item in filtered_list:
+        if item.work_day != current_day:
+            current_day = item.work_day
+            print()
+        print(f"{item.work_day:>2} {datetime.strftime(item.date, '%m/%d/%y %a')} "
+                f"{item.status.value:<8} {item.owner:<7} {item.task}")
+    input("---")
+
+
+def report_by_owner(todo_list: list, status:list):
+    """
+    Prints a report filtered on 'status' grouping by owner
+    """
+
+    # This will ultimately be pulled from a data table
+    owner_order = {
+        "Ethan": 1,
+        "Rosanne": 2,
+        "Jerry": 3,
+        "Luis": 4,
+        "Jeff": 5,
+    }
+
+    filtered_list = sorted([i for i in todo_list if i.status in status],
+                           key=lambda i: owner_order[i.owner])
+    util.clear_screen()
+    if not filtered_list:
+        input(f"\n\nNo items for this report. Press Enter to return to the Menu.\n---")
+        return
+    current_owner = filtered_list[0].owner
+    print(f"Wd Date     Day Status   Owner   Task")
+    print("---------------------------------------------------------------------")
+    for item in filtered_list:
+        if item.owner != current_owner:
+            current_owner = item.owner
+            print()
+        print(f"{item.work_day:>2} {datetime.strftime(item.date, '%m/%d/%y %a')} "
+                f"{item.status.value:<8} {item.owner:<7} {item.task}")
     input("---")
 
 

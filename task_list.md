@@ -2,10 +2,12 @@
 
 ## Immediate
 
+
 ## Current Focus
 1. Add functionality to simple_report() by adding a 'filtered_by' parameter
     - Currently hard coded to filter by status only
     - Filter by multiple TODO variables (e.g., owner and status; owner and date, etc.)
+    - Probably will require a decorator function wrapper
 1. Add more robust error handling of user input to update_status()
     - Don't go crazy - we ultimately want a web-based front end
 1. Create a backup before initiating a new month, in case user wants to revert
@@ -14,6 +16,8 @@
     - ensure file is in correct format (i.e., returns at least one TODO record)
         - Not exactly sure how to do this; maybe just a try / except block that will point the user
           to initiate a new month or recover from backup if there is bad data?
+1. Add an Owner table that would include relevant employee information (Name, title, contact_info,
+   sort_order for reports)
 
 ## Issues
 1. Initiate_month_end_menu difficult to get the current Menu class to return a value
