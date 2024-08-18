@@ -54,8 +54,11 @@ class Menu:
 
     def get_selection(self):
         while True:
+            selection = input("\nSelection ('0' to Exit): ")
+            if not selection:
+                return 0
             try:
-                selection = int(input("\nSelection ('0' to Exit): "))
+                selection = int(selection)
                 if 0 <= selection <= len(self.items):
                     return selection
                 else:

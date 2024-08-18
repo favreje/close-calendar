@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 import util, cal
 import sys
+import csv
 
 
 class Status(Enum):
@@ -287,6 +288,19 @@ def report_by_day(todo_list: list, status:list):
     input("---")
 
 
+def write_report_by_owner(todo_list):
+    path = "data/reports/report-by-owner.csv"
+    header = ["WD", "Date", "Day", "Status", "Owner", "Task",]
+    with open(path, mode="w") as report:
+        report_writer = csv.writer(report, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        report_writer.writerow(header)
+        for row in todo_list:
+            date = datetime.strftime(row.date, '%m/%d/%y')
+            day = datetime.strftime(row.date, '%a')
+            report_writer.writerow(
+                [row.work_day, date, day, row.status.value, row.owner, row.task])
+
+
 def report_by_owner(todo_list: list, status:list):
     """
     Prints a report filtered on 'status' grouping by owner
@@ -294,11 +308,15 @@ def report_by_owner(todo_list: list, status:list):
 
     # This will ultimately be pulled from a data table
     owner_order = {
-        "Ethan": 1,
-        "Rosanne": 2,
-        "Jerry": 3,
-        "Luis": 4,
-        "Jeff": 5,
+        "Catera": 1,
+        "Mike": 2,
+        "Chad": 3,
+        "Blaise": 4,
+        "Ethan": 5,
+        "Rosanne": 6,
+        "Jerry": 7,
+        "Luis": 8,
+        "Jeff": 9,
     }
 
     filtered_list = sorted([i for i in todo_list if i.status in status],
@@ -316,7 +334,9 @@ def report_by_owner(todo_list: list, status:list):
             print()
         print(f"{item.work_day:>2} {datetime.strftime(item.date, '%m/%d/%y %a')} "
                 f"{item.status.value:<8} {item.owner:<7} {item.task}")
-    input("---")
+    write_report_prompt = input("\n--- (S)ave file or (E)nter exit ---").lower()
+    if write_report_prompt in ["s", "save"] and filtered_list:
+        write_report_by_owner(filtered_list)
 
 
 def init_month_end(accounting_period):
