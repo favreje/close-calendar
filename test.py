@@ -201,11 +201,8 @@ def code_to_add():
 
 
 def main():
-    # period = datetime(2024, 7, 31)
-    status = [Status.OPEN, Status.STARTED]
-    todo_list = read_data()
-    # display_weekly_calendar(todo_list, period)
-    report_by_owner(todo_list, status)
+    my_date = util.get_accounting_period()
+    print(my_date)
 
 if __name__ == "__main__":
     main()

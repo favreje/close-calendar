@@ -144,16 +144,21 @@ def get_accounting_period() -> datetime:
     while True:
         try:
             user_entry = input("Enter New Accounting Period (mm/yy): ").lower()
-            date_parts = user_entry.split("/")
-            if len(date_parts[-1]) == 4:
-                date_parts[-1] = date_parts[-1][2:]
-            if len(date_parts) == 3:
-                # see if the "day" entered is valid
-                _ = datetime.strptime(
-                    date_parts[0] + "/" + date_parts[1] + "/" + date_parts[2][-2:], "%m/%d/%y"
-                ) 
-            user_date_str = date_parts[0] + "/01/" + date_parts[-1] 
-            input_date = datetime.strptime(user_date_str, "%m/%d/%y")
+            if user_entry.find("/") == -1:
+                month = user_entry[:2]
+                year = user_entry[2:]
+                date_str = month + "/01/" + year
+            else:
+                date_parts = user_entry.split("/")
+                if len(date_parts[-1]) == 4:
+                    date_parts[-1] = date_parts[-1][2:]
+                if len(date_parts) == 3:
+                    # see if the "day" entered is valid
+                    _ = datetime.strptime(
+                        date_parts[0] + "/" + date_parts[1] + "/" + date_parts[2][-2:], "%m/%d/%y"
+                    ) 
+                date_str = date_parts[0] + "/01/" + date_parts[-1] 
+            input_date = datetime.strptime(date_str, "%m/%d/%y")
             acct_period = cal.eom(input_date)
             user_confirm = input(
                 f"\nNew accounting period is {acct_period.strftime('%x')}\n"

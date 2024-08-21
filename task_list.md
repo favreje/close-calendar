@@ -2,7 +2,6 @@
 
 ## Immediate
 
-
 ## Current Focus
 1. Add functionality to simple_report() by adding a 'filtered_by' parameter
     - Currently hard coded to filter by status only
