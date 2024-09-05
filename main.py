@@ -34,10 +34,8 @@ def main():
     report_menu.add_item("List View by Owner - All Items", action=fe.Action(report_by_owner,
                             working_list, all))
 
-    report_menu.add_item("List View without Groups - Open and Started Items",
-                            action=fe.Action(report_by_day, working_list,
-                            [Status.OPEN, Status.STARTED,])
-                        )
+    report_menu.add_item("List View by Date - All Items",
+                            action=fe.Action(report_by_day, working_list, all))
 
     status_update_menu.add_item("Update Status to Complete", action=fe.Action(update_status,
                                   working_list, [Status.OPEN, Status.STARTED], Status.COMPLETE))

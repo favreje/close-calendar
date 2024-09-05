@@ -285,7 +285,7 @@ def report_by_day(todo_list: list, status:list):
             print()
         print(f"{item.work_day:>2} {datetime.strftime(item.date, '%m/%d/%y %a')} "
                 f"{item.status.value:<8} {item.owner:<7} {item.task}")
-    write_report_prompt = input("\n--- (S)ave file or (E)nter exit ---  ").lower()
+    write_report_prompt = input("\n--- (S)ave file or (E)nter to Exit ---  ").lower()
     if write_report_prompt in ["s", "save"] and filtered_list:
         report_name = "report-by-date.csv"
         write_report(filtered_list, report_name)
@@ -294,7 +294,7 @@ def report_by_day(todo_list: list, status:list):
 def write_report(todo_list, report_name):
     path = "data/reports/" + report_name
     header = ["WD", "Date", "Day", "Status", "Owner", "Task",]
-    with open(path, mode="w") as report:
+    with open(path, mode="w", newline="") as report:
         report_writer = csv.writer(report, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         report_writer.writerow(header)
         for row in todo_list:
@@ -337,7 +337,7 @@ def report_by_owner(todo_list: list, status:list):
             print()
         print(f"{item.work_day:>2} {datetime.strftime(item.date, '%m/%d/%y %a')} "
                 f"{item.status.value:<8} {item.owner:<7} {item.task}")
-    write_report_prompt = input("\n--- (S)ave file or (E)nter exit ---  ").lower()
+    write_report_prompt = input("\n--- (S)ave file or (E)nter to Exit ---  ").lower()
     if write_report_prompt in ["s", "save"] and filtered_list:
         report_name = "report-by-owner.csv"
         write_report(filtered_list, report_name)

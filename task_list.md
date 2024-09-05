@@ -1,6 +1,9 @@
 # TO-DO List
 
 ## Immediate
+1. For write_report function, add exception handling for PermissionError if the file is opened in
+   another application (e.g., Excel)
+1. Function to add a task to the database
 
 ## Current Focus
 1. Add functionality to simple_report() by adding a 'filtered_by' parameter
@@ -25,6 +28,7 @@
     - Similar to an api approach. 
 
 ## Main Concepts
+1. Refactor to make the app more OOP focused (currently uses classes only to store data objects)
 1. Web-based front-end would include a check-box type object, except with three states:
     - A circle type bullet object
     - Bullet object would toggle between
